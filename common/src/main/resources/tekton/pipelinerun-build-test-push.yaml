@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: app-build-test-push
+spec:
+  pipelineRef:
+    name: app-build-test-push
+  params:
+    - name: dockerfile
+      value: {{ include "dockerfile.path" . }}
+    - name: output-image
+      value: {{ .Values.image.url }} # Example: quay.io/ch007m/my-quarkus-app"
+    - name: url
+      value: {{ include "git.repo.url" . }}
+    - name: native
+      value: {{ .Values.build.native }}
+  workspaces:
+    - name: project-dir
+      persistentVolumeClaim:
+        claimName: ${{ values.component_id }}-project-pvc
+    - name: maven-m2-repo
+      persistentVolumeClaim:
+        claimName: ${{ values.component_id }}-m2-repo-pvc
+    - name: maven-settings
+      configMap:
+        name: ${{ values.component_id }}-maven-settings
+    - name: dockerconfig-ws
+      secret:
+        secretName: dockerconfig-secret
