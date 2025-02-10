@@ -23,7 +23,7 @@ public class LsTask {
                 .withMountPath("/mnt/workspace")
                 .endWorkspace()
                 .addNewStep()
-                .withName("clone")
+                .withName("ls")
                 .withImage("quay.io/redhat-cop/ubi8-git:v1.0")
                 .withWorkingDir("$(workspaces.project-dir.path)")
                 .withCommand("sh", "-c")
