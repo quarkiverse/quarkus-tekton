@@ -14,7 +14,7 @@ public class ProjectWorkspacePvc {
                 .withName(name + "-project-pvc")
                 .endMetadata()
                 .withNewSpec()
-                .withAccessModes("ReadWriteOnce")
+                .withAccessModes("ReadWriteMany")
                 .withNewResources()
                 .withRequests(Map.of("storage", new Quantity("2Gi")))
                 .endResources()

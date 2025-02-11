@@ -161,7 +161,7 @@ public class Serialization {
      * @return
      */
     public static KubernetesList unmarshalAsList(InputStream is) {
-        String content = Resources.read(is);
+        String content = Strings.read(is);
         String[] parts = splitDocument(content);
         List<HasMetadata> items = new ArrayList<>();
         for (String part : parts) {

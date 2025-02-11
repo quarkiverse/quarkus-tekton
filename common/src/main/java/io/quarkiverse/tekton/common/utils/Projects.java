@@ -2,7 +2,10 @@ package io.quarkiverse.tekton.common.utils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
+
+import io.quarkus.devtools.project.QuarkusProject;
 
 public final class Projects {
 
@@ -64,5 +67,46 @@ public final class Projects {
             currentDir = currentDir.getParent();
         }
         return currentDir;
+    }
+
+    public static String getArtifactId() {
+        return getArtifactId(getProjectRoot());
+    }
+
+    public static String getArtifactId(Path projectDirPath) {
+        return getProjectInfo(projectDirPath).get("artifactId");
+    }
+
+    public static String getVersion() {
+        return getVersion(getProjectRoot());
+    }
+
+    public static String getVersion(Path projectDirPath) {
+        return getProjectInfo(projectDirPath).get("version");
+    }
+
+    public static Map<String, String> getProjectInfo(Path projectDirPath) {
+        if (projectDirPath.resolve("pom.xml").toFile().exists()) {
+            return Maven.getProjectInfo(projectDirPath);
+        } else if (projectDirPath.resolve("build.gradle").toFile().exists()) {
+            return Gradle.getProjectInfo(projectDirPath);
+        } else if (projectDirPath.resolve("build.gradle.kts").toFile().exists()) {
+            return GradleKotlin.getProjectInfo(projectDirPath);
+        } else {
+            throw new IllegalArgumentException("Unsupported build tool");
+        }
+    }
+
+    public static Map<String, String> getProjectInfo(QuarkusProject project) {
+        switch (project.getBuildTool()) {
+            case MAVEN:
+                return Maven.getProjectInfo(project);
+            case GRADLE:
+                return Gradle.getProjectInfo(project);
+            case GRADLE_KOTLIN_DSL:
+                return GradleKotlin.getProjectInfo(project);
+            default:
+                throw new IllegalArgumentException("Unsupported build tool: " + project.getBuildTool());
+        }
     }
 }

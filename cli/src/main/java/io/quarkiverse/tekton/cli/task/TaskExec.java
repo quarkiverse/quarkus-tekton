@@ -1,5 +1,6 @@
 package io.quarkiverse.tekton.cli.task;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import io.quarkiverse.tekton.cli.common.Clients;
 import io.quarkiverse.tekton.cli.common.TaskRuns;
 import io.quarkiverse.tekton.cli.common.WorkspaceBindings;
 import io.quarkiverse.tekton.common.utils.Params;
+import io.quarkiverse.tekton.common.utils.Projects;
 import io.quarkiverse.tekton.common.utils.Serialization;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -40,6 +42,9 @@ public class TaskExec extends AbstractTaskCommand {
     public void process(List<HasMetadata> resources) {
         readInstalledTasks();
         readProjectTasks(resources);
+        WorkspaceBindings.readBindingResources(resources);
+        Path projectRootDirPath = Projects.getProjectRoot();
+        String projectName = Projects.getArtifactId(projectRootDirPath);
 
         if (!isInstalled(taskName)) {
             if (isProject(taskName)) {
@@ -66,26 +71,30 @@ public class TaskExec extends AbstractTaskCommand {
 
             if (t instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
                 v1beta1Task.getSpec().getWorkspaces().forEach(w -> {
-                    String name = w.getName();
-                    WorkspaceBindings.forName(name).ifPresent(workspaceBindings::add);
+                    String workspaceName = w.getName();
+                    System.out.println("Searching workspace for v1beta1 Task with name:" + workspaceName);
+                    WorkspaceBindings.forName(projectName, workspaceName).ifPresent(workspaceBindings::add);
                 });
                 v1beta1Task.getSpec().getParams().forEach(p -> parameterNames.add(p.getName()));
             } else if (t instanceof io.fabric8.tekton.v1.Task v1Task) {
                 v1Task.getSpec().getWorkspaces().forEach(w -> {
-                    String name = w.getName();
-                    WorkspaceBindings.forName(name).ifPresent(workspaceBindings::add);
+                    String workspaceName = w.getName();
+                    System.out.println("Searching workspace for v1 Task with name:" + workspaceName);
+                    WorkspaceBindings.forName(projectName, workspaceName).ifPresent(workspaceBindings::add);
                 });
                 v1Task.getSpec().getParams().forEach(p -> parameterNames.add(p.getName()));
             }
 
             List<Param> params = parameterNames.size() == 1 ? Params.createSingle(parameterNames.get(0), taskArgs)
                     : Params.create(taskArgs);
+
             for (Param param : params) {
-                output.debug("Param:\t" + Serialization.asYaml(param));
+                output.out().println("Param:\t" + Serialization.asYaml(param));
             }
 
             for (WorkspaceBinding binding : workspaceBindings) {
-                output.debug("Binding:\t" + Serialization.asYaml(binding));
+                output.out().println("Binding:\t" + Serialization.asYaml(binding));
+                WorkspaceBindings.createIfNeeded(binding);
             }
 
             String taskRunName = taskName + "-run";
@@ -106,7 +115,8 @@ public class TaskExec extends AbstractTaskCommand {
                 Clients.kubernetes().resource(taskRun).delete();
             }
             taskRun = Clients.kubernetes().resource(taskRun).serverSideApply();
-            output.debug("Created TaskRun %s.", taskRunName);
+            output.out().printf("Created TaskRun %s.", taskRunName);
+            output.out().println(Serialization.asYaml(taskRun));
             TaskRuns.waitUntilReady(taskRunName);
             TaskRuns.log(taskRunName);
             return;
