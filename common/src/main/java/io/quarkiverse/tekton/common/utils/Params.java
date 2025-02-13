@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.ParamBuilder;
@@ -24,15 +25,14 @@ public final class Params {
             return false;
     }
 
-    public static List<Param> createSingle(String name, List<String> list) {
-        String type = list.size() > 1 ? "array" : "string";
+    public static List<Param> createSingle(String name, String type, List<String> list) {
         List<Param> result = new ArrayList<>();
         result.add(new ParamBuilder()
                 .withName(name)
                 .withNewValue()
                 .withType(type)
-                .withStringVal(list.size() == 1 ? list.get(0) : null)
-                .withArrayVal(list.size() > 1 ? list : new ArrayList<>())
+                .withStringVal("string".equals(type) ? list.stream().collect(Collectors.joining(" ")) : null)
+                .withArrayVal("array".equals(type) ? list : new ArrayList<>())
                 .endValue()
                 .build());
         return result;

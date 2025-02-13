@@ -54,46 +54,43 @@ public class TaskExec extends AbstractTaskCommand {
                 output.err().println("Task " + taskName + " not installed.");
             }
             return;
-        }
-
-        if (isInstalled(taskName)) {
+        } else {
+            output.out().println("Executing Task: " + taskName);
             HasMetadata t = getInstalledTask(taskName).get();
 
-            Map<String, PersistentVolumeClaim> pvcClaims = Clients.kubernetes().persistentVolumeClaims().list().getItems()
-                    .stream().collect(Collectors.toMap(p -> p.getMetadata().getName(), Function.identity()));
-            Map<String, ConfigMap> configMaps = Clients.kubernetes().configMaps().list().getItems().stream()
-                    .collect(Collectors.toMap(c -> c.getMetadata().getName(), Function.identity()));
-            Map<String, Secret> secrets = Clients.kubernetes().secrets().list().getItems().stream()
-                    .collect(Collectors.toMap(s -> s.getMetadata().getName(), Function.identity()));
-
             List<WorkspaceBinding> workspaceBindings = new ArrayList<>();
-            List<String> parameterNames = new ArrayList<>();
+            Map<String, String> parameters = new HashMap<>();
 
             if (t instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
                 v1beta1Task.getSpec().getWorkspaces().forEach(w -> {
                     String workspaceName = w.getName();
-                    System.out.println("Searching workspace for v1beta1 Task with name:" + workspaceName);
-                    WorkspaceBindings.forName(projectName, workspaceName).ifPresent(workspaceBindings::add);
+
+                    WorkspaceBindings.forName(projectName, workspaceName)
+                            .or(() -> !Boolean.TRUE.equals(w.getOptional())
+                                    ? WorkspaceBindings.forEmpty(projectName, workspaceName)
+                                    : Optional.empty())
+                            .ifPresent(workspaceBindings::add);
                 });
-                v1beta1Task.getSpec().getParams().forEach(p -> parameterNames.add(p.getName()));
+                v1beta1Task.getSpec().getParams().forEach(p -> parameters.put(p.getName(), p.getType()));
             } else if (t instanceof io.fabric8.tekton.v1.Task v1Task) {
                 v1Task.getSpec().getWorkspaces().forEach(w -> {
                     String workspaceName = w.getName();
-                    System.out.println("Searching workspace for v1 Task with name:" + workspaceName);
-                    WorkspaceBindings.forName(projectName, workspaceName).ifPresent(workspaceBindings::add);
+
+                    WorkspaceBindings.forName(projectName, workspaceName)
+                            .or(() -> !Boolean.TRUE.equals(w.getOptional())
+                                    ? WorkspaceBindings.forEmpty(projectName, workspaceName)
+                                    : Optional.empty())
+                            .ifPresent(workspaceBindings::add);
                 });
-                v1Task.getSpec().getParams().forEach(p -> parameterNames.add(p.getName()));
+                v1Task.getSpec().getParams().forEach(p -> parameters.put(p.getName(), p.getType()));
             }
 
-            List<Param> params = parameterNames.size() == 1 ? Params.createSingle(parameterNames.get(0), taskArgs)
+            List<Param> params = parameters.size() == 1
+                    ? Params.createSingle(parameters.keySet().iterator().next(), parameters.values().iterator().next(),
+                            taskArgs)
                     : Params.create(taskArgs);
 
-            for (Param param : params) {
-                output.out().println("Param:\t" + Serialization.asYaml(param));
-            }
-
             for (WorkspaceBinding binding : workspaceBindings) {
-                output.out().println("Binding:\t" + Serialization.asYaml(binding));
                 WorkspaceBindings.createIfNeeded(binding);
             }
 

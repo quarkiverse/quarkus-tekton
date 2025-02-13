@@ -80,8 +80,7 @@ public class WorkspaceBindings {
             return forPvc(applicationName, workspaceName,
                     n -> n.replaceAll("-dir$", ""),
                     n -> n.replaceAll("-dir$", "-pvc"),
-                    n -> n.replaceAll("-pvc$", ""))
-                    .or(() -> forEmpty(applicationName, workspaceName));
+                    n -> n.replaceAll("-pvc$", ""));
         }
         if (workspaceName.endsWith("-pvc")) {
             return forPvc(applicationName, workspaceName,
@@ -109,7 +108,7 @@ public class WorkspaceBindings {
 
         // No conventions detected, check for exact matches
         return forPvc(applicationName, workspaceName).or(() -> forConfigMap(applicationName, workspaceName))
-                .or(() -> forSecret(applicationName, workspaceName)).or(() -> forEmpty(applicationName, workspaceName));
+                .or(() -> forSecret(applicationName, workspaceName));
     }
 
     public static Optional<WorkspaceBinding> forPvc(String applicationName, String workspaceName, Mapper... mappers) {
@@ -124,7 +123,6 @@ public class WorkspaceBindings {
         }
         String name = applicationName + "-" + workspaceName;
         if (PVC_CLAIMS.containsKey(name)) {
-            System.out.println("Binding: " + workspaceName + " pvc: " + name);
             return Optional.of(
                     new WorkspaceBindingBuilder().withName(workspaceName).withNewPersistentVolumeClaim(name, false).build());
         }
