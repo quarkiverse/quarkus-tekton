@@ -2,15 +2,12 @@ package io.quarkiverse.tekton.cli.task;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
-import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.TaskRun;
 import io.fabric8.tekton.v1.TaskRunBuilder;
@@ -20,9 +17,9 @@ import io.quarkiverse.tekton.cli.common.TaskRuns;
 import io.quarkiverse.tekton.cli.common.WorkspaceBindings;
 import io.quarkiverse.tekton.common.utils.Params;
 import io.quarkiverse.tekton.common.utils.Projects;
-import io.quarkiverse.tekton.common.utils.Serialization;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Unmatched;
 
 @Command(name = "exec", header = "Execute tekton tasks.")
 public class TaskExec extends AbstractTaskCommand {
@@ -30,7 +27,7 @@ public class TaskExec extends AbstractTaskCommand {
     @Parameters(index = "0", paramLabel = "TASK", description = "Task name.")
     String taskName;
 
-    @Parameters(index = "1..", description = "Additional parameters passed to the build system")
+    @Unmatched
     private List<String> taskArgs = new ArrayList<>();
 
     @Override
@@ -112,8 +109,7 @@ public class TaskExec extends AbstractTaskCommand {
                 Clients.kubernetes().resource(taskRun).delete();
             }
             taskRun = Clients.kubernetes().resource(taskRun).serverSideApply();
-            output.out().printf("Created TaskRun %s.", taskRunName);
-            output.out().println(Serialization.asYaml(taskRun));
+            output.out().printf("Created TaskRun %s.\n", taskRunName);
             TaskRuns.waitUntilReady(taskRunName);
             TaskRuns.log(taskRunName);
             return;
