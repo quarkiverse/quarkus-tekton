@@ -14,7 +14,7 @@ import io.quarkiverse.tekton.spi.GeneratedTektonResourceBuildItem;
 import io.quarkiverse.tekton.task.BuildahTask;
 import io.quarkiverse.tekton.task.GitCloneTask;
 import io.quarkiverse.tekton.task.LsTask;
-import io.quarkiverse.tekton.task.MavenBuildTask;
+import io.quarkiverse.tekton.task.MavenTask;
 import io.quarkiverse.tekton.task.RmTask;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -53,7 +53,7 @@ class TektonProcessor {
         resources.add(LsTask.create());
         resources.add(RmTask.create());
         resources.add(GitCloneTask.create());
-        resources.add(MavenBuildTask.create());
+        resources.add(MavenTask.create());
         resources.add(BuildahTask.create());
 
         generatedTektonResources.produce(new GeneratedTektonResourceBuildItem(resources));
