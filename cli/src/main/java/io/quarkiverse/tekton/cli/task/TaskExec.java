@@ -18,6 +18,7 @@ import io.quarkiverse.tekton.cli.common.WorkspaceBindings;
 import io.quarkiverse.tekton.common.utils.Params;
 import io.quarkiverse.tekton.common.utils.Projects;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
 
@@ -27,12 +28,15 @@ public class TaskExec extends AbstractTaskCommand {
     @Parameters(index = "0", paramLabel = "TASK", description = "Task name.")
     String taskName;
 
+    @Option(names = { "-r", "--regenerate" }, description = "Regenerate and reinstall the task.")
+    boolean regenerate = false;
+
     @Unmatched
     private List<String> taskArgs = new ArrayList<>();
 
     @Override
     public boolean shouldOverwrite() {
-        return false;
+        return regenerate;
     }
 
     @Override
@@ -42,6 +46,19 @@ public class TaskExec extends AbstractTaskCommand {
         WorkspaceBindings.readBindingResources(resources);
         Path projectRootDirPath = Projects.getProjectRoot();
         String projectName = Projects.getArtifactId(projectRootDirPath);
+        if (regenerate) {
+            getProjectTask(taskName).ifPresentOrElse(t -> {
+                Clients.kubernetes().resource(t).serverSideApply();
+                if (t instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
+                    addInstalledTask(v1beta1Task);
+                }
+                if (t instanceof io.fabric8.tekton.v1.Task v1Task) {
+                    addInstalledTask(v1Task);
+                }
+            }, () -> {
+                throw new IllegalArgumentException("Failed to regenerate/reinstall Task " + taskName + ".");
+            });
+        }
 
         if (!isInstalled(taskName)) {
             if (isProject(taskName)) {
