@@ -7,6 +7,6 @@ import io.quarkiverse.tekton.common.utils.Serialization;
 public class MavenTask {
 
     public static Task create() {
-        return Serialization.unmarshal(Resources.read("/tekton/tasks/maven.yaml"));
+        return Serialization.unmarshal(Resources.read("/tekton/tasks/catalog/maven.yaml"));
     }
 }
