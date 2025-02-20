@@ -305,7 +305,7 @@ spec:
 
       with open("sbom-purl.json", "w") as output_file:
         json.dump(purl_content, output_file, indent=4)
-    workingDir: $(workspaces.source.path)
+    workingDir: $(workspaces.project-dir.path)
     securityContext:
       runAsUser: 0
 
@@ -313,8 +313,8 @@ spec:
     image: $(params.BUILDER_IMAGE)
     computeResources: {}
     script: |
-      base_image_name=$(buildah inspect --format '{{include "expression.image.name" . }}' $IMAGE | cut -f1 -d'@')
-      base_image_digest=$(buildah inspect --format '{{include "expression.image.digest" . }}' $IMAGE)
+      base_image_name=$(buildah inspect --format '{{ .Name }}:{{ .Tag }}' $IMAGE | cut -f1 -d'@')
+      base_image_digest=$(buildah images --format '{{ .Name }}:{{ .Tag }}@{{ .Digest }}' --filter reference="$image")
       container=$(buildah from --pull-never $IMAGE)
       buildah copy $container sbom-cyclonedx.json sbom-purl.json /root/buildinfo/content_manifests/
       buildah config -a org.opencontainers.image.base.name=${base_image_name} -a org.opencontainers.image.base.digest=${base_image_digest} $container
@@ -329,7 +329,7 @@ spec:
         echo "Pushing sbom image to registry"
         buildah push \
           --tls-verify=$TLSVERIFY \
-          --digestfile $(workspaces.source.path)/image-digest $IMAGE \
+          --digestfile $(workspaces.project-dir.path)/image-digest $IMAGE \
           docker://$IMAGE && break || status=$?
       done
       if [ "$status" -ne 0 ]; then
@@ -371,5 +371,5 @@ spec:
   workspaces:
   - name: project-dir
     description: Workspace containing the source code to build.
-  - name: dockerconfig
+  - name: dockerconfig-secret
     description: Workspace containing the registry credentials
