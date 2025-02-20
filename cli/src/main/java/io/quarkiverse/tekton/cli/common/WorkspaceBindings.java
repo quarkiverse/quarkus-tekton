@@ -107,13 +107,13 @@ public class WorkspaceBindings {
         }
 
         // No conventions detected, check for exact matches
-        return forPvc(applicationName, workspaceName).or(() -> forConfigMap(applicationName, workspaceName))
+        return forPvc(applicationName, workspaceName)
+                .or(() -> forConfigMap(applicationName, workspaceName))
                 .or(() -> forSecret(applicationName, workspaceName));
     }
 
     public static Optional<WorkspaceBinding> forPvc(String applicationName, String workspaceName, Mapper... mappers) {
-        return forPvc(applicationName, workspaceName, false, mappers)
-                .or(() -> forPvc(applicationName, workspaceName, true, mappers));
+        return forPvc(applicationName, workspaceName, true, mappers);
     }
 
     public static Optional<WorkspaceBinding> forPvc(String applicationName, String workspaceName, boolean reReadClusterPvcs,
@@ -131,7 +131,7 @@ public class WorkspaceBindings {
             String newWorkspaceName = mapper.apply(workspaceName);
             String newName = applicationName + "-" + newWorkspaceName;
             if (PVC_CLAIMS.containsKey(newName)) {
-                return forPvc(applicationName, newWorkspaceName).map(b -> {
+                return forPvc(applicationName, newWorkspaceName, false).map(b -> {
                     b.setName(workspaceName);
                     return b;
                 });
@@ -141,8 +141,7 @@ public class WorkspaceBindings {
     }
 
     public static Optional<WorkspaceBinding> forConfigMap(String applicationName, String workspaceName, Mapper... mappers) {
-        return forConfigMap(applicationName, workspaceName, false, mappers)
-                .or(() -> forConfigMap(applicationName, workspaceName, true, mappers));
+        return forConfigMap(applicationName, workspaceName, true, mappers);
     }
 
     public static Optional<WorkspaceBinding> forConfigMap(String applicationName, String workspaceName,
@@ -159,7 +158,7 @@ public class WorkspaceBindings {
             String newWorkspaceName = mapper.apply(workspaceName);
             String newName = applicationName + "-" + newWorkspaceName;
             if (CONFIG_MAPS.containsKey(newName)) {
-                return forConfigMap(applicationName, newWorkspaceName).map(b -> {
+                return forConfigMap(applicationName, newWorkspaceName, false).map(b -> {
                     b.setName(workspaceName);
                     return b;
                 });
@@ -169,8 +168,7 @@ public class WorkspaceBindings {
     }
 
     public static Optional<WorkspaceBinding> forSecret(String applicationName, String workspaceName, Mapper... mappers) {
-        return forSecret(applicationName, workspaceName, false, mappers)
-                .or(() -> forSecret(applicationName, workspaceName, true, mappers));
+        return forSecret(applicationName, workspaceName, true, mappers);
     }
 
     public static Optional<WorkspaceBinding> forSecret(String applicationName, String workspaceName,
@@ -183,16 +181,18 @@ public class WorkspaceBindings {
             return Optional.of(new WorkspaceBindingBuilder().withName(workspaceName)
                     .withSecret(new SecretVolumeSourceBuilder().withSecretName(name).build()).build());
         }
+
         for (Mapper mapper : mappers) {
             String newWorkspaceName = mapper.apply(workspaceName);
             String newName = applicationName + "-" + newWorkspaceName;
             if (SECRETS.containsKey(newName)) {
-                return forConfigMap(applicationName, newWorkspaceName).map(b -> {
+                return forSecret(applicationName, newWorkspaceName, false).map(b -> {
                     b.setName(workspaceName);
                     return b;
                 });
             }
         }
+
         return Optional.empty();
     }
 
