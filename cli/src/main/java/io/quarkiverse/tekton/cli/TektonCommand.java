@@ -14,6 +14,7 @@ import picocli.CommandLine.Spec;
 @TopCommand
 @Command(name = "tekton", sortOptions = false, mixinStandardHelpOptions = false, header = "Tekton CLI", subcommands = {
         TaskCommand.class,
+        PipelineCommand.class,
         GenerateCommand.class })
 public class TektonCommand implements Callable<Integer> {
 
