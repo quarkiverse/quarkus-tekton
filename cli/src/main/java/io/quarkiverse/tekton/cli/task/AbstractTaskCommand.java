@@ -1,11 +1,6 @@
 package io.quarkiverse.tekton.cli.task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,10 +19,6 @@ public abstract class AbstractTaskCommand extends GenerationBaseCommand {
     @Inject
     KubernetesClient kubernetesClient;
 
-    // TODO: Uncomment when we get a new tektonclinet release
-    //    @Inject
-    //    TektonClient tektonClient;
-
     @Mixin(name = "output")
     OutputOptionMixin output;
 
@@ -40,7 +31,6 @@ public abstract class AbstractTaskCommand extends GenerationBaseCommand {
     void readInstalledTasks() {
         try {
             Clients.use(kubernetesClient);
-            //Clients.use(tektonClient);
 
             Clients.tekton().v1().tasks().list().getItems().forEach(t -> {
                 installedV1Tasks.put(t.getMetadata().getName(), t);

@@ -7,6 +7,237 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-enabled[`quarkus.tekton.devservices.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Enable the Tekton DevService.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`true`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-debug-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-debug-enabled[`quarkus.tekton.devservices.debug-enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.debug-enabled+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Enable the debugging level.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_DEBUG_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_DEBUG_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`false`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-show-logs]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-show-logs[`quarkus.tekton.devservices.show-logs`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.show-logs+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+If logs should be shown from the Tekton container.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_SHOW_LOGS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_SHOW_LOGS+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`false`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-version]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-version[`quarkus.tekton.devservices.version`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.version+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+The version of Tekton to be installed from the GitHub repository and which corresponds to a tagged release expressed as such: "v0.68.0"
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_VERSION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_VERSION+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`v0.68.0`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-controller-namespace]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-controller-namespace[`quarkus.tekton.devservices.controller-namespace`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.controller-namespace+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+The Tekton controller namespace where Tekton stuffs are deployed The default namespace is: tekton-pipelines
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_CONTROLLER_NAMESPACE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_CONTROLLER_NAMESPACE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`tekton-pipelines`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-time-out]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-time-out[`quarkus.tekton.devservices.time-out`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.time-out+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Time to wait till a resource is ready: pod, etc The default value is: 180 seconds
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_TIME_OUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_TIME_OUT+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|`360`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-cluster-type]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-cluster-type[`quarkus.tekton.devservices.cluster-type`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.cluster-type+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+The cluster type to be used: kind or k3 The default value is: kind
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_CLUSTER_TYPE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_CLUSTER_TYPE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`kind`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-host-name]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-host-name[`quarkus.tekton.devservices.host-name`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.host-name+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+The hostname of the tekton ingress route
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_HOST_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_HOST_NAME+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`tekton.localtest.me`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-host-port]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-host-port[`quarkus.tekton.devservices.host-port`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.host-port+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+The host port to be used on the host machine to access the dashboard
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_HOST_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_HOST_PORT+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`9097`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-ingress-version]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-ingress-version[`quarkus.tekton.devservices.ingress.version`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.ingress.version+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+The version of the Ingress controller to be installed from the GitHub repository If not specified, it will use the resources published on main branch The version to be used should be specified using the tagged release: v1.12.0, etc
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_INGRESS_VERSION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_INGRESS_VERSION+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`latest`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-ingress-port-forward-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-ingress-port-forward-enabled[`quarkus.tekton.devservices.ingress.port-forward-enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.devservices.ingress.port-forward-enabled+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Enable to forward the ingress traffic from the container to the local host
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_DEVSERVICES_INGRESS_PORT_FORWARD_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_DEVSERVICES_INGRESS_PORT_FORWARD_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`true`
+
 a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-generation-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-generation-enabled[`quarkus.tekton.generation.enabled`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.generation.enabled+++[]
