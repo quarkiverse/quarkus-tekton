@@ -1,7 +1,5 @@
 package io.quarkiverse.tekton.cli.common;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.tekton.client.DefaultTektonClient;
@@ -9,27 +7,25 @@ import io.fabric8.tekton.client.TektonClient;
 
 public class Clients {
 
-    private static final KubernetesClient DEFAULT_KUBERNETES = new KubernetesClientBuilder().build();
-    private static final TektonClient DEFAULT_TEKTON = new DefaultTektonClient();
+    private static KubernetesClient DEFAULT_KUBERNETES;
+    private static TektonClient DEFAULT_TEKTON;
+    private static KubernetesClient kubernetesClient;
 
-    private static final AtomicReference<KubernetesClient> kubernetes = new AtomicReference<>(DEFAULT_KUBERNETES);
-    private static final AtomicReference<TektonClient> tekton = new AtomicReference<>(DEFAULT_TEKTON);
-
-    public static KubernetesClient kubernetes() {
-        return kubernetes.get();
+    public static void use(KubernetesClient kubeclient) {
+        kubernetesClient = kubeclient;
     }
 
-    public static void use(KubernetesClient kubernetesClient) {
-        kubernetes.set(kubernetesClient);
-        use(new DefaultTektonClient(kubernetesClient.getConfiguration()));
-
+    public static KubernetesClient kubernetes() {
+        if (DEFAULT_KUBERNETES == null) {
+            DEFAULT_KUBERNETES = new KubernetesClientBuilder().build();
+        }
+        return DEFAULT_KUBERNETES;
     }
 
     public static TektonClient tekton() {
-        return tekton.get();
-    }
-
-    public static void use(TektonClient tektonClient) {
-        tekton.set(tektonClient);
+        if (DEFAULT_TEKTON == null) {
+            DEFAULT_TEKTON = new DefaultTektonClient(kubernetesClient);
+        }
+        return DEFAULT_TEKTON;
     }
 }

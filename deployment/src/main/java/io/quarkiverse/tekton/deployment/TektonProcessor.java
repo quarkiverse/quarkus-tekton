@@ -24,9 +24,9 @@ import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.kubernetes.spi.GeneratedKubernetesResourceBuildItem;
 
-class TektonProcessor {
+public class TektonProcessor {
 
-    private static final String FEATURE = "tekton";
+    public static final String FEATURE = "tekton";
 
     @BuildStep
     FeatureBuildItem feature() {

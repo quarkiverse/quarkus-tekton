@@ -6,8 +6,8 @@ import io.quarkus.runtime.annotations.ConfigRoot;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 
-@ConfigRoot(phase = BUILD_TIME)
 @ConfigMapping(prefix = "quarkus.tekton")
+@ConfigRoot(phase = BUILD_TIME)
 public interface TektonConfiguration {
 
     /**
@@ -21,6 +21,5 @@ public interface TektonConfiguration {
          */
         @WithDefault("true")
         boolean enabled();
-
     }
 }

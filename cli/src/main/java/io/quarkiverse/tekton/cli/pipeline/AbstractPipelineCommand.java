@@ -1,11 +1,6 @@
 package io.quarkiverse.tekton.cli.pipeline;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,9 +16,6 @@ import picocli.CommandLine.Mixin;
 
 public abstract class AbstractPipelineCommand extends GenerationBaseCommand {
 
-    @Inject
-    KubernetesClient kubernetesClient;
-
     @Mixin(name = "output")
     OutputOptionMixin output;
 
@@ -33,10 +25,12 @@ public abstract class AbstractPipelineCommand extends GenerationBaseCommand {
     private Map<String, io.fabric8.tekton.v1.Pipeline> projectV1Pipelines = new HashMap<>();
     private Map<String, io.fabric8.tekton.v1beta1.Pipeline> projectV1beta1Pipelines = new HashMap<>();
 
+    @Inject
+    KubernetesClient kubernetesClient;
+
     void readInstalledPipelines() {
         try {
             Clients.use(kubernetesClient);
-            //Clients.use(tektonClient);
 
             Clients.tekton().v1().pipelines().list().getItems().forEach(t -> {
                 installedV1Pipelines.put(t.getMetadata().getName(), t);
