@@ -10,7 +10,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "uninstall", header = "Uninstall tekton tasks.")
+@Command(name = "uninstall", header = "Uninstall Tekton tasks.")
 public class TaskUninstall extends AbstractTaskCommand {
 
     @Option(names = {

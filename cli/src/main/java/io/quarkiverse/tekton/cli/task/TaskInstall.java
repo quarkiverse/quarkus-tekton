@@ -9,7 +9,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "install", header = "Install tekton tasks.")
+@Command(name = "install", header = "Install Tekton tasks.")
 public class TaskInstall extends AbstractTaskCommand {
 
     @Parameters(index = "0", arity = "0..1", paramLabel = "TASK", description = "Task name.")

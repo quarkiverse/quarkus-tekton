@@ -18,7 +18,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
 
-@Command(name = "exec", header = "Execute tekton tasks.")
+@Command(name = "exec", header = "Execute Tekton tasks.")
 public class TaskExec extends AbstractTaskCommand {
 
     @Parameters(index = "0", paramLabel = "TASK", description = "Task name.")
