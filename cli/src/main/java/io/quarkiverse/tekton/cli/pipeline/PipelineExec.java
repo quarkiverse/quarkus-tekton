@@ -18,7 +18,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
 
-@Command(name = "exec", header = "Execute Tekton pipelines.")
+@Command(name = "exec", header = "Execute Tekton pipeline.")
 public class PipelineExec extends AbstractPipelineCommand {
 
     @Parameters(index = "0", paramLabel = "PIPELINE", description = "Pipeline name.")
