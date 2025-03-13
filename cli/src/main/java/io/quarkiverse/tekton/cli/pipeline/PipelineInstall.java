@@ -9,7 +9,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "install", header = "Install tekton pipelines.")
+@Command(name = "install", header = "Install Tekton pipelines.")
 public class PipelineInstall extends AbstractPipelineCommand {
 
     @Parameters(index = "0", arity = "0..1", paramLabel = "pipeline", description = "Pipeline name.")

@@ -10,7 +10,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "uninstall", header = "Uninstall tekton pipelines.")
+@Command(name = "uninstall", header = "Uninstall Tekton pipelines.")
 public class PipelineUninstall extends AbstractPipelineCommand {
 
     @Option(names = {
