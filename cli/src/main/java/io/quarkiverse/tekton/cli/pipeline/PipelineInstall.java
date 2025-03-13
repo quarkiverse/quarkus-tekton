@@ -15,7 +15,7 @@ public class PipelineInstall extends AbstractPipelineCommand {
     @Parameters(index = "0", arity = "0..1", paramLabel = "pipeline", description = "Pipeline name.")
     Optional<String> pipelineName;
 
-    @Option(names = { "--all" }, description = "Insall all plugins in the catalog.")
+    @Option(names = { "--all" }, description = "Install all plugins in the catalog.")
     boolean all;
 
     @Option(names = { "-r", "--regenerate" }, description = "Regenerate and reinstall the pipeline.")
