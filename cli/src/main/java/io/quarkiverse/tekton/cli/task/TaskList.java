@@ -5,7 +5,7 @@ import java.util.List;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import picocli.CommandLine.Command;
 
-@Command(name = "list", header = "List qton tasks. ")
+@Command(name = "list", header = "List Tekton tasks. ")
 public class TaskList extends AbstractTaskCommand {
 
     @Override

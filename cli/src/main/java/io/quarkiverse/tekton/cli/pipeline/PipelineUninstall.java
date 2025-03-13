@@ -14,7 +14,7 @@ import picocli.CommandLine.Parameters;
 public class PipelineUninstall extends AbstractPipelineCommand {
 
     @Option(names = {
-            "--all" }, defaultValue = "", paramLabel = "all", order = 6, description = "Insall all plugins in the catalog.")
+            "--all" }, defaultValue = "", paramLabel = "all", order = 6, description = "Install all plugins in the catalog.")
     boolean all;
 
     @Parameters(index = "0", arity = "0..1", paramLabel = "pipeline", description = "Pipeline name.")
