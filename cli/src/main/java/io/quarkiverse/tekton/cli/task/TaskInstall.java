@@ -15,7 +15,7 @@ public class TaskInstall extends AbstractTaskCommand {
     @Parameters(index = "0", arity = "0..1", paramLabel = "TASK", description = "Task name.")
     Optional<String> taskName;
 
-    @Option(names = { "--all" }, description = "Install all plugins in the catalog.")
+    @Option(names = { "--all" }, description = "Uninstall all the tasks.")
     boolean all;
 
     @Option(names = { "-r", "--regenerate" }, description = "Regenerate and reinstall the task.")
