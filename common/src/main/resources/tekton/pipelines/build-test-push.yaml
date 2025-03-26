@@ -2,9 +2,6 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: build-test-push
-  labels:
-  annotations:
-    argocd.argoproj.io/sync-wave: "4"
 spec:
   params:
     - name: url
@@ -30,7 +27,7 @@ spec:
       type: string
   workspaces:
     - name: project-dir
-    - name: maven-m2-repo
+    - name: maven-repo-dir
     - name: maven-settings
     - name: dockerconfig-secret
   tasks:
@@ -58,10 +55,11 @@ spec:
           workspace: maven-settings
         - name: project-dir
           workspace: project-dir
-        - name: maven-m2-repo
-          workspace: maven-m2-repo
-        - name: dockerconfig
-          workspace: dockerconfig-secret
+        - name: maven-local-repo # Wrong wks task's name. Rename then maven-repo-dir to maven-local-repo
+          workspace: maven-repo-dir
+        # NOT NEEDED AS DECLARED PASSED USING PARAM: REGISTRY_AUTH_PATH
+        #- name: dockerconfig
+        #  workspace: dockerconfig-secret
 
     - name: buildah-image
       runAfter:
@@ -71,4 +69,12 @@ spec:
       params:
         - name: IMAGE
           value: $(params.output-image)
+        # THIS IS MANDATORY TO PASS THE CREDS FILE TO THE TASK FROM THE WKS
+        - name: REGISTRY_AUTH_PATH
+          value: $(workspaces.dockerconfig-secret.path)
+      workspaces:
+        - name: project-dir
+          workspace: project-dir
+        - name: dockerconfig-secret
+          workspace: dockerconfig-secret
 
