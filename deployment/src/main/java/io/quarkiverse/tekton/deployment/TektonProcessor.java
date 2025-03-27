@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.quarkiverse.tekton.cm.MavenSettingsCm;
 import io.quarkiverse.tekton.common.utils.Serialization;
+import io.quarkiverse.tekton.pipeline.BuildTestPushPipeline;
 import io.quarkiverse.tekton.pvc.MavenRepoPvc;
 import io.quarkiverse.tekton.pvc.ProjectWorkspacePvc;
 import io.quarkiverse.tekton.spi.GeneratedTektonResourceBuildItem;
@@ -55,6 +56,9 @@ public class TektonProcessor {
         resources.add(GitCloneTask.create());
         resources.add(MavenTask.create());
         resources.add(BuildahTask.create());
+
+        // Pipelines
+        resources.add(new BuildTestPushPipeline().create());
 
         generatedTektonResources.produce(new GeneratedTektonResourceBuildItem(resources));
     }

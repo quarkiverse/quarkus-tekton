@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  name: app-build-test-push
+  name: build-test-push
 spec:
   params:
     - name: url
@@ -27,9 +27,9 @@ spec:
       type: string
   workspaces:
     - name: project-dir
-    - name: maven-m2-repo
+    - name: maven-repo-dir
     - name: maven-settings
-    - name: dockerconfig-ws
+    - name: dockerconfig-secret
   tasks:
     - name: git-clone
       taskRef:
@@ -41,10 +41,12 @@ spec:
         - name: project-dir
           workspace: project-dir
 
-    - name: maven-package
+    - name: maven-package-test
       taskRef:
         name: maven
       params:
+        - name: DOCKER_CONFIG
+          value: $(workspaces.dockerconfig.path)/config.json
         - name: GOALS
           value:
             - package
@@ -53,38 +55,26 @@ spec:
           workspace: maven-settings
         - name: project-dir
           workspace: project-dir
-        - name: maven-m2-repo
-          workspace: maven-m2-repo
-
-    - # This step is optional and only executed if native build is specified
-      name: quarkus-native-build
-      runAfter:
-        - maven-package-test
-      when:
-        - input: $(params.native)
-          operator: in
-          values: [ "true" ]
-      taskRef:
-        name: quarkus-native-build
-      workspaces:
-        - name: project-dir
-          workspace: project-dir
+        - name: maven-local-repo # Wrong wks task's name. Rename then maven-repo-dir to maven-local-repo
+          workspace: maven-repo-dir
+        # NOT NEEDED AS DECLARED PASSED USING PARAM: REGISTRY_AUTH_PATH
+        #- name: dockerconfig
+        #  workspace: dockerconfig-secret
 
     - name: buildah-image
       runAfter:
-        - quarkus-native-build
         - maven-package-test
       taskRef:
         name: buildah
       params:
         - name: IMAGE
           value: $(params.output-image)
-        - name: DOCKERFILE
-          value: $(params.dockerfile)
+        # THIS IS MANDATORY TO PASS THE CREDS FILE TO THE TASK FROM THE WKS
         - name: REGISTRY_AUTH_PATH
-          value: $(workspaces.dockerconfig.path)
+          value: $(workspaces.dockerconfig-secret.path)
       workspaces:
-        - name: source
+        - name: project-dir
           workspace: project-dir
-        - name: dockerconfig
-          workspace: dockerconfig-ws
+        - name: dockerconfig-secret
+          workspace: dockerconfig-secret
+
