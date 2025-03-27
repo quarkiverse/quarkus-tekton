@@ -11,7 +11,7 @@ public class MavenRepoPvc {
     public static PersistentVolumeClaim create(String name) {
         return new PersistentVolumeClaimBuilder()
                 .withNewMetadata()
-                .withName(name + "-mavenrepo-pvc")
+                .withName(name + "-maven-repo-pvc")
                 .endMetadata()
                 .withNewSpec()
                 .withAccessModes("ReadWriteOnce")
