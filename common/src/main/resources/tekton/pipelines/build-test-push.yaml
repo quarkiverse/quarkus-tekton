@@ -27,7 +27,7 @@ spec:
       type: string
   workspaces:
     - name: project-dir
-    - name: maven-m2-repo
+    - name: mavenrepo-dir
     - name: maven-settings
     - name: dockerconfig-secret
   tasks:
@@ -55,8 +55,8 @@ spec:
           workspace: maven-settings
         - name: project-dir
           workspace: project-dir
-        - name: maven-local-repo # Wrong wks task's name. Rename then maven-m2-repo to maven-local-repo
-          workspace: maven-m2-repo
+        - name: maven-local-repo # Wrong wks task's name. Rename then mavenrepo-dir to maven-local-repo
+          workspace: mavenrepo-dir
         # NOT NEEDED AS DECLARED PASSED USING PARAM: REGISTRY_AUTH_PATH
         #- name: dockerconfig
         #  workspace: dockerconfig-secret
