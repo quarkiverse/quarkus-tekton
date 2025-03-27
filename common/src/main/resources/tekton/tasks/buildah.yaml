@@ -26,7 +26,7 @@ spec:
     description: The location of the buildah builder image.
     name: BUILDER_IMAGE
     type: string
-  - default: ./Dockerfile
+  - default: src/main/docker/Dockerfile.jvm
     description: Path to the Dockerfile to build.
     name: DOCKERFILE
     type: string

@@ -10,6 +10,7 @@ spec:
     - name: dockerfile
       type: string
       description: Path to the dockerfile within the project cloned
+      default: "src/main/docker/Dockerfile.jvm"
     - name: output-image
       type: string
       description: Fully Qualified Output Image
@@ -69,6 +70,8 @@ spec:
       params:
         - name: IMAGE
           value: $(params.output-image)
+        - name: DOCKERFILE
+          value: $(params.dockerfile)
         # THIS IS MANDATORY TO PASS THE CREDS FILE TO THE TASK FROM THE WKS
         - name: REGISTRY_AUTH_PATH
           value: $(workspaces.dockerconfig-secret.path)
