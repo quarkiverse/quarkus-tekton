@@ -136,28 +136,23 @@ jobs:
           EOF
           kubectl create secret generic dockerconfig-secret -n demo --from-file=config.json
 
-      - name: Create a Quarkus Application
+      - name: Create a Quarkus Application and push it to a gitea repository
         run: |
           echo "## Create a quarkus alias"
           shopt -s expand_aliases
           alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
+          
+          TMP_DIR=$(mktemp -d)
+          pushd $TMP_DIR
+          quarkus create app
+          cd code-with-quarkus
           
           quarkus create app \
             --name my-quarkus-hello \
             dev.snowdrop:my-quarkus-hello:0.1.0 \
             -x helm,container-image-podman,rest \
             --wrapper
-
-      - name: Push the Quarkus application to the git repository
-        run: |
           
-          echo "## Check env variables"
-          echo "Gitea host: $GITEA_HOST"
-          echo "Gitea token: $GITEA_TOKEN"
-          echo "Gitea username: $GITEA_USERNAME"
-          echo "Gitea password: $GITEA_PASSWORD"
-          
-          cd my-quarkus-hello
           git init
           
           git config user.email "coder@quarkus.io"
@@ -173,20 +168,12 @@ jobs:
           git branch -M main
           git remote add origin https://$GITEA_TOKEN@$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
           git push -u origin main
-
-      - name: Create a pipeline using the client, deploy & launch it
-        run: |
-          echo "## Create a quarkus alias"
-          shopt -s expand_aliases
-          alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
-          
-          cd my-quarkus-hello
           
           echo "## Register the Tekton plugin"
           quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
           
           echo "## Compile the Quarkus HelloWorld project"
-          mvn -B install -DskipTests
+          mvn -B install -DskipTests -Dno-format
           
           echo "##Generate the Tekton YAML files"
           quarkus tekton generate
@@ -196,6 +183,8 @@ jobs:
           quarkus pipeline exec build-test-push \
             output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME/hello:latest \
             url=https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
+          
+          popd
 
       - name: Watch tekton resources ...
         run: |
