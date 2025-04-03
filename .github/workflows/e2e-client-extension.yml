@@ -160,8 +160,9 @@ jobs:
           
           git add .
           git commit -asm "Initial upload"
+          git branch -M main
           git remote add origin https://$GITEA_TOKEN@$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
-          git push
+          git push -u origin main
 
       - name: Create a pipeline using the client, deploy & launch it
         run: |
