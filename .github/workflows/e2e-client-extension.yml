@@ -174,9 +174,14 @@ jobs:
           echo "## Register the Tekton plugin"
           quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
           
-          echo "## Compile the Quarkus HelloWorld project"
+          echo "## Compile the Quarkus HelloWorld project and build the image"
           mvn -B install -DskipTests -Dno-format
-          
+          quarkus build \
+            -Dquarkus.container-image.build=true \
+            -Dquarkus.container-image.push=true \
+            -Dquarkus.container-image.image=$GITEA_HOST/$REPO_ORG/$REPO_NAME \
+            -Dquarkus.container-image.insecure=true
+        
           echo "##Generate the Tekton YAML files"
           quarkus tekton generate
           
