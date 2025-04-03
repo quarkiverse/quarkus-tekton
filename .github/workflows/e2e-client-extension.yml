@@ -224,7 +224,7 @@ jobs:
               tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run -f
             else
               echo "#########################################"
-              echo "Wait till the pipelineruns is running ..."
+              echo "Wait till the pipelinerun is running ..."
               echo "#########################################"
               kubectl get pods -n ${KUBE_NAMESPACE}
           
@@ -233,6 +233,7 @@ jobs:
           done
 
       - name: Execute if the job fails
+        # TODO: Disable the following line when job will succeeds
         #if: ${{ failure() }}
         run: |
           SCRIPTS=$(pwd)/.github/scripts
