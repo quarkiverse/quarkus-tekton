@@ -198,7 +198,7 @@ jobs:
           quarkus tekton pipeline install build-test-push
           
           echo "## Launch the pipeline"
-          quarkus pipeline exec build-test-push \
+          quarkus tekton pipeline exec build-test-push \
             output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME/hello:latest \
             url=https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
           
