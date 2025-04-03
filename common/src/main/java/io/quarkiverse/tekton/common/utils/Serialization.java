@@ -40,18 +40,23 @@ public class Serialization {
     private static final String BLANK = "";
 
     private static JsonFactory JSON_FACTORY = new JsonFactory();
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper(JSON_FACTORY)
-            .setSerializationInclusion(Include.NON_EMPTY);
+
+    private static final ObjectMapper JSON_MAPPER;
 
     private static YAMLFactory YAML_FACTORY = new YAMLFactory()
             .enable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
             .disable(YAMLGenerator.Feature.SPLIT_LINES)
             .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
 
-    private static final ObjectMapper YAML_MAPPER = new YAMLMapper(YAML_FACTORY)
-            .setSerializationInclusion(Include.NON_EMPTY);
+    private static final ObjectMapper YAML_MAPPER;
 
     static {
+        YAML_MAPPER = new YAMLMapper(YAML_FACTORY)
+                .setSerializationInclusion(Include.NON_EMPTY);
+
+        JSON_MAPPER = new ObjectMapper(JSON_FACTORY)
+                .setSerializationInclusion(Include.NON_EMPTY);
+
         JSON_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
