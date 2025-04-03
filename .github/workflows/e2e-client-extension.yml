@@ -228,7 +228,6 @@ jobs:
             fi
           done
 
-
       - name: Execute if the job fails
         if: ${{ failure() }}
         run: |
