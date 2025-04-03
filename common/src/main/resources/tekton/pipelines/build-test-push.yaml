@@ -26,6 +26,10 @@ spec:
       default: "true"
       name: deploy
       type: string
+    - default: "true"
+      description: boolean allowing to verify the TLS certificate during git clone
+      name: sslVerify
+      type: string
   workspaces:
     - name: project-dir
     - name: maven-repo-dir
@@ -38,6 +42,8 @@ spec:
       params:
         - name: url
           value: $(params.url)
+        - name: sslVerify
+          value: $(params.sslVerify)
       workspaces:
         - name: project-dir
           workspace: project-dir
