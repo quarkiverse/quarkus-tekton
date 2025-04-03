@@ -156,6 +156,10 @@ jobs:
           git config user.email "coder@quarkus.io"
           git config user.name "Quarkus coder"
           git config init.defaultBranch main
+        
+          # To avoid the git error: server certificate verification failed. CAfile: none CRLfile: none
+          git config http.sslverify false
+          export GIT_SSL_NO_VERIFY=true
           
           git add .
           git commit -asm "Initial upload"
