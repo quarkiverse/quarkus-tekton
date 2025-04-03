@@ -215,7 +215,7 @@ jobs:
           echo "#########################################"
           echo "Pipelineruns starting ..."
           echo "#########################################"
-          for i in `seq 30`; do
+          for i in `seq 50`; do
             if [[ $(get_pipelineruns_length) -gt 0 ]]; then
               tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run -f
             else
@@ -236,7 +236,22 @@ jobs:
           echo "#########################################"
           echo "Get pods ...."
           echo "#########################################"
-          kubectl get pods -A
+          kubectl get pods -n demo
+          
+          echo "#########################################"
+          echo "Get PVC ...."
+          echo "#########################################"
+          kubectl get pvc -n demo
+          
+          echo "#########################################"
+          echo "Get secrets ...."
+          echo "#########################################"
+          kubectl get secrets -n demo
+          
+          echo "#########################################"
+          echo "List/describe and show yaml of the resource ...."
+          echo "#########################################"
+          $SCRIPTS/listShowDescribeResource.sh pipelinerun/build-test-push-run demo
           
           echo "#########################################"
           echo "PipelineRun log ...."

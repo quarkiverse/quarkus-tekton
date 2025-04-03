@@ -195,6 +195,8 @@ spec:
       buildah images --format '{{ .Name }}:{{ .Tag }}@{{ .Digest }}' | grep -v $IMAGE > $(results.BASE_IMAGES_DIGESTS.path)
 
     securityContext:
+      # The following parameter allows to build the image when tekton runs in a github workflow
+      # TODO: We should create a parameter to enable/disable it
       privileged: true
       capabilities:
         add:
