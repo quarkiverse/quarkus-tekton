@@ -219,7 +219,7 @@ jobs:
           echo "#########################################"
           echo "Pipelineruns starting ..."
           echo "#########################################"
-          for i in `seq 50`; do
+          for i in `seq 20`; do
             if [[ $(get_pipelineruns_length) -gt 0 ]]; then
               tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run -f
             else
@@ -228,7 +228,7 @@ jobs:
               echo "#########################################"
               kubectl get pods -n ${KUBE_NAMESPACE}
           
-              sleep 30
+              sleep 10
             fi
           done
 
