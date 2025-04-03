@@ -156,6 +156,7 @@ jobs:
           
           git config user.email "coder@quarkus.io"
           git config user.name "Quarkus coder"
+          git config init.defaultBranch main
           
           git add .
           git commit -asm "Initial upload"
