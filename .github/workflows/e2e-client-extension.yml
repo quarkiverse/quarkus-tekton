@@ -153,6 +153,10 @@ jobs:
         run: |
           cd my-quarkus-hello
           git init
+          
+          git config user.email "coder@quarkus.io"
+          git config user.name "Quarkus coder"
+          
           git add .
           git commit -asm "Initial upload"
           git remote add origin https://$GITEA_TOKEN@$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
