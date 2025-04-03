@@ -358,7 +358,8 @@ spec:
       - sbom
       - --sbom
       - sbom-cyclonedx.json
-      - --allow-insecure-registry=true
+      - --allow-insecure-registry
+      - true
       - --type
       - cyclonedx
       - $(params.IMAGE)
