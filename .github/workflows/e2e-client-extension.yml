@@ -199,7 +199,7 @@ jobs:
           
           echo "## Launch the pipeline"
           quarkus tekton pipeline exec build-test-push \
-            output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME/hello:latest \
+            output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME:latest \
             url=https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git \
             sslVerify=false
           
