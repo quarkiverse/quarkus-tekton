@@ -30,6 +30,8 @@ env:
   REPO_NAME: my-quarkus-app-job
   REPO_DESCRIPTION: "Quarkus HelloWorld git repository"
 
+  PROJECT_NAME: code-with-quarkus
+
   # This namespace will be used to build/deploy the generated quarkus app
   KUBE_NAMESPACE: demo
   KUBE_CONTEXT: kind-$IDPCLUSTER_NAME
@@ -138,7 +140,7 @@ jobs:
             }
           }
           EOF
-          kubectl create secret generic dockerconfig-secret -n demo --from-file=config.json
+          kubectl create secret generic $PROJECT_NAME-dockerconfig-secret -n demo --from-file=config.json
 
       - name: Create a Quarkus Application and push it to a gitea repository
         run: |
