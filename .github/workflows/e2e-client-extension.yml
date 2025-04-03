@@ -65,7 +65,7 @@ jobs:
           shopt -s expand_aliases
           alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
           
-          echo "Register the tekton plugin
+          echo "Register the tekton plugin"
           quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
 
       - name: Install idpbuilder
