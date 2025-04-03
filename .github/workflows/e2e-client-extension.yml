@@ -49,7 +49,7 @@ jobs:
           cache: 'maven'
 
       - name: Build the project with Maven
-        run: mvn -B install -Dno-format -DskipTests
+        run: mvn -ntp -B install -Dno-format -DskipTests
 
       # We can install the client but it is not possible in another step to access it
       #- name: Install Quarkus client
@@ -177,7 +177,7 @@ jobs:
           quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
           
           echo "## Compile the Quarkus HelloWorld project and build the image"
-          mvn -B install -DskipTests -Dno-format
+          mvn -ntp -B install -DskipTests -Dno-format
           quarkus build \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
