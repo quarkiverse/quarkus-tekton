@@ -150,6 +150,13 @@ jobs:
 
       - name: Push the Quarkus application to the git repository
         run: |
+          
+          echo "## Check env variables"
+          echo "Gitea host: $GITEA_HOST"
+          echo "Gitea token: $GITEA_TOKEN"
+          echo "Gitea username: $GITEA_USERNAME"
+          echo "Gitea password: $GITEA_PASSWORD"
+          
           cd my-quarkus-hello
           git init
           
