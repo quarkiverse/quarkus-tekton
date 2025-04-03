@@ -79,7 +79,9 @@ jobs:
       - name: Create an IDP cluster and install the packages
         run: |
           PACKAGES_DIR=$(pwd)/.github/idp
-          idpbuilder create --dev-password \
+          idpbuilder create \
+            --name idpplatform \
+            --dev-password \
             -p $PACKAGES_DIR/tekton
 
       - name: Create the namespace where applications, resources should be deployed
@@ -177,9 +179,17 @@ jobs:
           
           echo "##Generate the Tekton YAML files"
           quarkus tekton generate
+          
+          echo "## Install all the Tekton tasks"
+          kubectl config use-context kind-idplatform
+          kubectl config set-context --current --namespace=demo
+
           quarkus tekton task install --all
+          
+          echo "## Install the Tekton pipeline"
           quarkus tekton pipeline install build-test-push
           
+          echo "## Launch the pipeline"
           quarkus pipeline exec build-test-push \
             output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME/hello:latest \
             url=https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
