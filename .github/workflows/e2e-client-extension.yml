@@ -19,6 +19,7 @@ env:
   QUARKUS_CLI_VERSION: 3.21.1
 
   IDPBUILDER_VERSION: v0.9.0
+  IDPCLUSTER_NAME: idplatform
 
   TEKTON_VERSION: v0.60.1
   TEKTON_CLIENT_VERSION: 0.40.0
@@ -31,6 +32,7 @@ env:
 
   # This namespace will be used to build/deploy the generated quarkus app
   KUBE_NAMESPACE: demo
+  KUBE_CONTEXT: kind-$IDPCLUSTER_NAME
 
 jobs:
   e2e-quarkus-tekton-client:
@@ -80,7 +82,7 @@ jobs:
         run: |
           PACKAGES_DIR=$(pwd)/.github/idp
           idpbuilder create \
-            --name idpplatform \
+            --name $IDPCLUSTER_NAME \
             --dev-password \
             -p $PACKAGES_DIR/tekton
 
@@ -186,7 +188,8 @@ jobs:
           quarkus tekton generate
           
           echo "## Install all the Tekton tasks"
-          kubectl config use-context kind-idplatform
+          kubectl config get-contexts
+          kubectl config use-context kind-$IDPCLUSTER_NAME
           kubectl config set-context --current --namespace=demo
 
           quarkus tekton task install --all
