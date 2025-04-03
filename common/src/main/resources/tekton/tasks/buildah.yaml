@@ -195,7 +195,7 @@ spec:
       buildah images --format '{{ .Name }}:{{ .Tag }}@{{ .Digest }}' | grep -v $IMAGE > $(results.BASE_IMAGES_DIGESTS.path)
 
     securityContext:
-      runAsUser: 0
+      privileged: true
       capabilities:
         add:
           - SETFCAP
