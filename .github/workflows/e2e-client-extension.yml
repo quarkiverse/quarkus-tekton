@@ -1,0 +1,203 @@
+name: Client and Extension Integration test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+  # TODO: To be reviewed to figure out if we need it or not
+  #pull_request_target:
+  #  branches: [ 'main' ]
+  #  # types: [opened, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  IDPBUILDER_VERSION: v0.9.0
+
+  TEKTON_VERSION: v0.60.1
+  TEKTON_CLIENT_VERSION: 0.37.0
+
+  GITEA_HOST: "gitea.cnoe.localtest.me:8443"
+
+  REPO_ORG: quarkus
+  REPO_NAME: my-quarkus-app-job
+  REPO_DESCRIPTION: "Quarkus HelloWorld git repository"
+
+  # This namespace will be used to build/deploy the generated quarkus app and
+  # should be the same as the one defined within the ConfigMap of ArgocCD using: application.namespaces: "demo"
+  KUBE_NAMESPACE: demo
+
+jobs:
+  setup-idp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: 'maven'
+
+      - name: Build the project with Maven
+        run: mvn -B install -Dno-format -DskipTests
+
+      - name: Install Quarkus client
+        run: |
+          curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/
+          curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force quarkus@quarkusio
+
+      - name: Install idpbuilder
+        run: |
+          version=${IDPBUILDER_VERSION}
+          curl -L -o ./idpbuilder.tar.gz "https://github.com/cnoe-io/idpbuilder/releases/download/${version}/idpbuilder-$(uname | awk '{print tolower($0)}')-$(uname -m | sed 's/x86_64/amd64/').tar.gz"
+          tar xzf idpbuilder.tar.gz
+          sudo mv ./idpbuilder /usr/local/bin/
+
+          idpbuilder version
+
+      - name: Install tekton client
+        run: |
+          curl -sSL "https://github.com/tektoncd/cli/releases/download/v{$TEKTON_CLIENT_VERSION}/tkn_${TEKTON_CLIENT_VERSION}_Linux_x86_64.tar.gz" -o tkn.tar.gz
+          sudo tar xvzf tkn.tar.gz -C /usr/local/bin/ tkn
+          tkn version
+
+      - name: Create an IDP cluster and install the packages
+        run: |
+          PACKAGES_DIR=$(pwd)/.github/idp
+          idpbuilder create --dev-password \
+            -p $PACKAGES_DIR/tekton
+
+      - name: Create the namespace where applications, resources should be deployed
+        run: |
+          kubectl create ns ${KUBE_NAMESPACE}
+
+      - name: Set env variables
+        run: |
+          # GITEA_HOST=$(kubectl get ingress/my-gitea -n gitea -ojson | jq -r '.spec.rules[0].host')
+          GITEA_USERNAME="giteaAdmin"
+          GITEA_PASSWORD="developer"
+          GITEA_TOKEN=$(idpbuilder get secrets -p gitea -ojson | jq -r '.[].data.token')
+          
+          echo "GITEA_USERNAME=$GITEA_USERNAME" >> "$GITHUB_ENV"
+          echo "GITEA_PASSWORD=$GITEA_PASSWORD" >> "$GITHUB_ENV"
+          echo "GITEA_TOKEN=$GITEA_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Create the gitea organization
+        run: |
+          echo "Creating the organization: $REPO_ORG on https://$GITEA_HOST"
+          curl -k -X POST \
+            "https://$GITEA_HOST/api/v1/orgs" \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -u "$GITEA_USERNAME:$GITEA_PASSWORD" \
+            -d '{"username": "'"$REPO_ORG"'"}'
+
+      - name: Create the gitea repository
+        run: |
+          echo "Creating the organization: $REPO_ORG on https://$GITEA_HOST"
+          curl -kv -X POST \
+            "https://$GITEA_HOST/v1/orgs/$ORG_NAME/repos" \
+            -H 'accept: application/json' -H 'Content-Type: application/json' \
+            -u "$GITEA_USERNAME:$GITEA_PASSWORD" \
+            -d '{
+              "auto_init": true,
+              "default_branch": "main",
+              "description": "'"$REPO_DESCRIPTION"'",
+              "name": "'"$REPO_NAME"'",
+              "readme": "Default",
+              "private": false
+            }'
+
+      - name: Create the secret containing the creds to write an image on Gitea
+        run: |
+          GITEA_CREDS=$(echo -n "$GITEA_USERNAME:$GITEA_PASSWORD" | base64 -w 0)
+          
+          cat <<EOF > config.json
+          {
+            "auths": {
+              "https://$GITEA_HOST": {
+                "auth": "$GITEA_CREDS"
+              }
+            }
+          }
+          EOF
+          kubectl create secret generic dockerconfig-secret -n demo --from-file=config.json
+
+      - name: Create a Quarkus Application
+        run: |
+          quarkus create app \
+            --name my-quarkus-hello \
+            dev.snowdrop:my-quarkus-hello:0.1.0 \
+            -x helm,container-image-podman,rest \
+            --wrapper
+
+      - name: Push the Quarkus application to the git repository
+        run: |
+          cd my-quarkus-hello
+          git init
+          git add .
+          git commit -asm "Initial upload"
+          git remote add origin https://$GITEA_TOKEN@$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
+          git push
+
+      - name: Create a pipeline using the client, deploy & launch it
+        run: |  
+          quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
+          quarkus tekton generate
+          quarkus tekton task install --all
+          quarkus tekton pipeline install build-test-push
+          
+          quarkus pipeline exec build-test-push \
+            output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME/hello:latest \
+            url=https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
+
+      - name: Watch tekton resources ...
+        run: |
+          get_pipelineruns_length() {
+            tkn pipelinerun list -n ${KUBE_NAMESPACE} -o json | jq -r '.items | length'
+          }
+          
+          echo "#########################################"
+          echo "Pipelineruns starting ..."
+          echo "#########################################"
+          for i in `seq 30`; do
+            if [[ $(get_pipelineruns_length) -gt 0 ]]; then
+              tkn pipelinerun logs -n ${KUBE_NAMESPACE} $REPO_NAME-build-test-push -f
+            else
+              echo "#########################################"
+              echo "Wait till the pipelineruns is running ..."
+              echo "#########################################"
+              kubectl get pods -n ${KUBE_NAMESPACE}
+          
+              sleep 30
+            fi
+          done
+
+      # - name: Wait till the application is running and log it
+      #   run: |
+      #     SCRIPTS=$(pwd)/.github/scripts
+      #     TODO
+
+
+      - name: Execute if the job fails
+        if: ${{ failure() }}
+        run: |
+          SCRIPTS=$(pwd)/.github/scripts
+          
+          echo "#########################################"
+          echo "Get pods ...."
+          echo "#########################################"
+          kubectl get pods -A
+          
+          # $SCRIPTS/logTektonResources.sh
+          
+
+          
+          
