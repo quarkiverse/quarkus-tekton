@@ -182,7 +182,8 @@ jobs:
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.image=$GITEA_HOST/$REPO_ORG/$REPO_NAME \
-            -Dquarkus.container-image.insecure=true -Dquarkus.podman.tls-verify=false
+            -Dquarkus.container-image.insecure=true \
+            -Dquarkus.podman.tls-verify=false
         
           echo "##Generate the Tekton YAML files"
           quarkus tekton generate
@@ -216,7 +217,7 @@ jobs:
           echo "#########################################"
           for i in `seq 30`; do
             if [[ $(get_pipelineruns_length) -gt 0 ]]; then
-              tkn pipelinerun logs -n ${KUBE_NAMESPACE} $REPO_NAME-build-test-push -f
+              tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run -f
             else
               echo "#########################################"
               echo "Wait till the pipelineruns is running ..."
@@ -226,11 +227,6 @@ jobs:
               sleep 30
             fi
           done
-
-      # - name: Wait till the application is running and log it
-      #   run: |
-      #     SCRIPTS=$(pwd)/.github/scripts
-      #     TODO
 
 
       - name: Execute if the job fails
@@ -243,7 +239,10 @@ jobs:
           echo "#########################################"
           kubectl get pods -A
           
-          # $SCRIPTS/logTektonResources.sh
+          echo "#########################################"
+          echo "PipelineRun log ...."
+          echo "#########################################"
+          tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run
           
 
           
