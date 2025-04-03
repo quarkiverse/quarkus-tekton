@@ -180,6 +180,8 @@ jobs:
           shopt -s expand_aliases
           alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
           
+          cd my-quarkus-hello
+          
           echo "## Register the Tekton plugin"
           quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
           
