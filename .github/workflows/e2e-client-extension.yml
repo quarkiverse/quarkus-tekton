@@ -55,18 +55,11 @@ jobs:
       #    curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/
       #    curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force quarkus@quarkusio
 
-      - name: Install Quarkus CLI, create an alias and register the plugin
+      - name: Install the Quarkus CLI
         run: |
           echo "## Install quarkus CLI"
           curl -sL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-cli/$QUARKUS_CLI_VERSION/quarkus-cli-$QUARKUS_CLI_VERSION-runner.jar -o quarkus-cli.jar
           java -jar quarkus-cli.jar version
-
-          echo "## Create a quarkus alias"
-          shopt -s expand_aliases
-          alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
-          
-          echo "Register the tekton plugin"
-          quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
 
       - name: Install idpbuilder
         run: |
@@ -146,6 +139,10 @@ jobs:
 
       - name: Create a Quarkus Application
         run: |
+          echo "## Create a quarkus alias"
+          shopt -s expand_aliases
+          alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
+          
           quarkus create app \
             --name my-quarkus-hello \
             dev.snowdrop:my-quarkus-hello:0.1.0 \
@@ -162,7 +159,11 @@ jobs:
           git push
 
       - name: Create a pipeline using the client, deploy & launch it
-        run: |  
+        run: |
+          echo "## Create a quarkus alias"
+          shopt -s expand_aliases
+          alias quarkus="java -jar ${GITHUB_WORKSPACE}/quarkus-cli.jar"
+          
           quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:999-SNAPSHOT
           quarkus tekton generate
           quarkus tekton task install --all
