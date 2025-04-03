@@ -229,7 +229,7 @@ jobs:
           done
 
       - name: Execute if the job fails
-        if: ${{ failure() }}
+        #if: ${{ failure() }}
         run: |
           SCRIPTS=$(pwd)/.github/scripts
           
