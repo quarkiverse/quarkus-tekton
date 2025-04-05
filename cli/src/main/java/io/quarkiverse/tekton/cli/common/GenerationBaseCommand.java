@@ -125,7 +125,6 @@ public abstract class GenerationBaseCommand implements Callable<Integer> {
 
     public Integer call() {
         if (!shouldOverwrite() && Files.exists(getTektonOutputDir())) {
-            System.out.println("Tekton resources already exist in " + getTektonOutputDir());
             GenerationBaseCommand.this.process(readExistingTektonResources());
             return ExitCode.OK;
         }
