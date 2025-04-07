@@ -26,6 +26,9 @@ spec:
       default: "true"
       name: deploy
       type: string
+    - description: Maven goals
+      name: mavenGoals
+      type: array
   workspaces:
     - name: project-dir
     - name: maven-repo-dir
@@ -49,8 +52,7 @@ spec:
         - name: DOCKER_CONFIG
           value: $(workspaces.dockerconfig.path)/config.json
         - name: GOALS
-          value:
-            - package
+          value: [ "$(params.mavenGoals[*])" ]
       workspaces:
         - name: maven-settings
           workspace: maven-settings

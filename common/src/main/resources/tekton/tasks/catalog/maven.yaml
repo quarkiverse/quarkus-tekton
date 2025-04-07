@@ -156,7 +156,8 @@ spec:
     - name: mvn-goals
       image: $(params.MAVEN_IMAGE)
       workingDir: $(workspaces.project-dir.path)/$(params.CONTEXT_DIR)
-      args: ["$(params.GOALS[*])"]
+      args:
+        - "$(params.GOALS[*])"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
