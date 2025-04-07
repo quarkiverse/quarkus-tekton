@@ -30,6 +30,9 @@ spec:
       description: boolean allowing to verify the TLS certificate during task execution like git clone, image push to a registry, etc
       name: sslVerify
       type: string
+    - description: Maven goals
+      name: mavenGoals
+      type: array
   workspaces:
     - name: project-dir
     - name: maven-repo-dir
@@ -55,8 +58,7 @@ spec:
         - name: DOCKER_CONFIG
           value: $(workspaces.dockerconfig.path)/config.json
         - name: GOALS
-          value:
-            - package
+          value: [ "$(params.mavenGoals[*])" ]
       workspaces:
         - name: maven-settings
           workspace: maven-settings
