@@ -59,9 +59,20 @@ public final class Params {
     }
 
     public static Param create(String name, Object value) {
-        String stringVal = value instanceof String ? (String) value : null;
+        String stringVal = null;
         String[] arrayVal = value instanceof String[] ? (String[]) value : null;
         Map<String, String> objectVal = value instanceof Map ? (Map) value : null;
+
+        if (value instanceof String) {
+            // Try to split the content of the string to see if the content could be split into an array
+            // using as separator a space
+            String val = (String) value;
+            if (val.split(" ").length > 1) {
+                arrayVal = val.split(" ");
+            } else {
+                stringVal = val;
+            }
+        }
 
         return new ParamBuilder()
                 .withName(name)
