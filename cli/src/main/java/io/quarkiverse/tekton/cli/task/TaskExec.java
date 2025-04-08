@@ -2,17 +2,18 @@ package io.quarkiverse.tekton.cli.task;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.TaskRun;
 import io.fabric8.tekton.v1.TaskRunBuilder;
 import io.fabric8.tekton.v1.WorkspaceBinding;
-import io.quarkiverse.tekton.cli.common.Clients;
 import io.quarkiverse.tekton.cli.common.TaskRuns;
-import io.quarkiverse.tekton.cli.common.WorkspaceBindings;
+import io.quarkiverse.tekton.common.utils.Clients;
 import io.quarkiverse.tekton.common.utils.Params;
 import io.quarkiverse.tekton.common.utils.Projects;
+import io.quarkiverse.tekton.common.utils.WorkspaceBindings;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -95,10 +96,11 @@ public class TaskExec extends AbstractTaskCommand {
                 v1Task.getSpec().getParams().forEach(p -> parameters.put(p.getName(), p.getType()));
             }
 
-            List<Param> params = parameters.size() == 1
-                    ? Params.createSingle(parameters.keySet().iterator().next(), parameters.values().iterator().next(),
-                            taskArgs)
-                    : Params.create(taskArgs);
+            // Convert the arguments passed by the Cli command as List<String> into a Map<String,String> where the key is equal is the left part of key=val
+            List<Param> params = Params.create(taskArgs.stream()
+                    .map(s -> s.split("=", 2)) // Split each string into at most two parts
+                    .filter(parts -> parts.length == 2) // Ensure we have both key and value
+                    .collect(Collectors.toMap(parts -> parts[0], parts -> parts[1])));
 
             for (WorkspaceBinding binding : workspaceBindings) {
                 WorkspaceBindings.createIfNeeded(binding);

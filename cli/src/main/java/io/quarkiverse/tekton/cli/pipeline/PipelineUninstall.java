@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.quarkiverse.tekton.cli.common.Clients;
+import io.quarkiverse.tekton.common.utils.Clients;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;

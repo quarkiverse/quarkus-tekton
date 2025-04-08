@@ -1,10 +1,8 @@
 package io.quarkiverse.tekton.common.utils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.ParamBuilder;
@@ -25,36 +23,11 @@ public final class Params {
             return false;
     }
 
-    public static List<Param> createSingle(String name, String type, List<String> list) {
+    public static List<Param> create(Map<String, String> map) {
         List<Param> result = new ArrayList<>();
-        result.add(new ParamBuilder()
-                .withName(name)
-                .withNewValue()
-                .withType(type)
-                .withStringVal("string".equals(type) ? list.stream().collect(Collectors.joining(" ")) : null)
-                .withArrayVal("array".equals(type) ? list : new ArrayList<>())
-                .endValue()
-                .build());
-        return result;
-    }
-
-    public static List<Param> create(List<String> list) {
-        List<Param> result = new ArrayList<>();
-        Iterator<String> iterator = list.iterator();
-        String key = null;
-        String value = null;
-        while (iterator.hasNext()) {
-            String s = iterator.next();
-            if (key != null) {
-                value = s;
-                result.add(create(key, value));
-                key = null;
-            } else if (isValidKeyValue(s)) {
-                result.add(create(s));
-            } else {
-                key = s;
-            }
-        }
+        map.forEach((k, v) -> {
+            result.add(create(k, v));
+        });
         return result;
     }
 

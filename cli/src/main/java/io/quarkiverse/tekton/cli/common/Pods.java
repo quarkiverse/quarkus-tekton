@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.KubernetesClientTimeoutException;
+import io.quarkiverse.tekton.common.utils.Clients;
 
 public class Pods {
 
