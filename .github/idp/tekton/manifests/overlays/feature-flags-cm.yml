@@ -8,8 +8,8 @@ metadata:
   namespace: tekton-pipelines
 data:
   await-sidecar-readiness: "true"
-  coschedule: "disabled"
-  disable-affinity-assistant: "false"
+  coschedule: "workspaces" # Set the value to workspaces allow to use the same PVC between workspaces
+  disable-affinity-assistant: "true" # Disable the assistant to use the same PVC between workspaces
   disable-creds-init: "false"
   disable-inline-spec: ""
   enable-api-fields: "beta"

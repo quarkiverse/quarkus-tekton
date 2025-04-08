@@ -1,0 +1,20 @@
+apiVersion: v1
+data:
+  cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIBrjCCAVWgAwIBAgIRANVxnVEu/E8Ofejj2cuWXbEwCgYIKoZIzj0EAwIwEjEQ
+    MA4GA1UEChMHY25vZS5pbzAeFw0yNTA0MDgwOTAyMzlaFw0yNjA0MDgxNTAyMzla
+    MBIxEDAOBgNVBAoTB2Nub2UuaW8wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQD
+    J4WI+tRp08cG0D6NAq5IllXBYAe7IQPbMDr238lagFcG8jvu1Smv0mbxwYF2eLcI
+    JUWy/F/4HIKQTIFy2m5Ao4GLMIGIMA4GA1UdDwEB/wQEAwIChDATBgNVHSUEDDAK
+    BggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQYhUt/eSZTjQLt
+    slE1X1ByTEAm3DAxBgNVHREEKjAoghFjbm9lLmxvY2FsdGVzdC5tZYITKi5jbm9l
+    LmxvY2FsdGVzdC5tZTAKBggqhkjOPQQDAgNHADBEAiAzobHOSV6Gmo3MH3cFD+On
+    4ozx5QP676FcHjO4Z7lB/AIgFUrLZ7e1Q4x1L3zF800XFoYV6QmfQH90oh6wXW+P
+    ngQ=
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: config-registry-cert
+  namespace: tekton-pipelines

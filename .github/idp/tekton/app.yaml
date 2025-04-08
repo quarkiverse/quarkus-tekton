@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: cnoe://manifests
     targetRevision: HEAD
-    path: "v0.60"
+    path: "overlays"
   project: default
   syncPolicy:
     automated:
