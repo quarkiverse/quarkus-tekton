@@ -23,12 +23,19 @@ public class GenerateCommand extends GenerationBaseCommand {
     @Override
     public void process(List<HasMetadata> resources) {
         String json = Serialization.asJson(resources);
-        String yml = Serialization.asYaml(resources);
+
+        // Iterate through the list of the resources to process them individually to include ---
+        // as separator between them instead of a list of items
+        StringBuilder yamlOutput = new StringBuilder();
+        for (HasMetadata resource : resources) {
+            String yaml = Serialization.asYaml(resource).trim();
+            yamlOutput.append(yaml).append("\n");
+        }
 
         Path root = Projects.getProjectRoot();
         Path dotTekton = root.resolve(".tekton");
 
         writeStringSafe(dotTekton.resolve("tekton.json"), json);
-        writeStringSafe(dotTekton.resolve("tekton.yml"), yml);
+        writeStringSafe(dotTekton.resolve("tekton.yml"), yamlOutput.toString());
     }
 }
