@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.ParamBuilder;
@@ -27,11 +26,8 @@ public final class Params {
 
     public static <T> List<Param> create(T input) {
         List<Param> result = new ArrayList<>();
-        Map<String, String> map;
-
         /**
-         * We got a Map<String, String> when the user is setting the following Quarkus property
-         * quarkus.tekton.params property where the params are defined as such by example
+         * We got a quarkus tekton params property where params are defined as:
          *
          * -Dquarkus.tekton.pipelinerun.params.url=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job
          * -Dquarkus.tekton.pipelinerun.params.sslVerify=false
@@ -39,14 +35,13 @@ public final class Params {
          * -Dquarkus.tekton.pipelinerun.params.mavenGoals="-Dquarkus.container-image.build=false
          * -Dquarkus.container-image.push=false package"
          */
-        if (input instanceof Map<?, ?>) {
-            map = (Map<String, String>) input;
+        if (input instanceof Map<?, ?> map) {
             map.forEach((k, v) -> {
-                result.add(create(k, v));
+                result.add(create(String.valueOf(k), v));
             });
 
             /**
-             * We got a List<String> when the user is using a Quarkus tekton CLI command
+             * We got a List<String> from the Quarkus tekton CLI
              *
              * quarkus pipeline exec build-test-push \
              * sslVerify=false \
@@ -55,10 +50,8 @@ public final class Params {
              * mavenGoals="-Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
              * -Dquarkus.container-image.image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job package"
              *
-             * The code hereafter supports to pass the key/value as such
-             * myKey=myValue
-             * myKey myValue
-             *
+             * It is then needed to convert the List<String> of arguments into a Map<String,String> where the key is equal to
+             * the left part of key=val
              */
         } else if (input instanceof List<?>) {
             Iterator<String> iterator = ((List<String>) input).iterator();
@@ -76,41 +69,6 @@ public final class Params {
                     key = s;
                 }
             }
-        } else {
-            throw new IllegalArgumentException("Unsupported input type");
-        }
-
-        List<Param> result = new ArrayList<>();
-        Map<String, String> map;
-        /**
-         * We got a quarkus tekton params property where params are defined as:
-         *
-         * -Dquarkus.tekton.pipelinerun.params.url=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job
-         * -Dquarkus.tekton.pipelinerun.params.sslVerify=false
-         * -Dquarkus.tekton.pipelinerun.params.output-image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job
-         * -Dquarkus.tekton.pipelinerun.params.mavenGoals="-Dquarkus.container-image.build=false
-         * -Dquarkus.container-image.push=false package"
-         */
-        if (input instanceof Map<?, ?>) {
-            map = (Map<String, String>) input;
-            /**
-             * We got a List<String> from the Quarkus tekton CLI
-             *
-             * quarkus pipeline exec build-test-push \
-             * sslVerify=false \
-             * output-image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job \
-             * url=https://gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job.git \
-             * mavenGoals="-Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
-             * -Dquarkus.container-image.image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job package"
-             *
-             * It is then needed to convert the List<String> of arguments into a Map<String,String> where the key is equal to
-             * the left part of key=val
-             */
-        } else if (input instanceof List<?>) {
-            map = ((List<String>) input).stream()
-                    .map(s -> s.split("=", 2)) // Split each string into at most two parts
-                    .filter(parts -> parts.length == 2) // Ensure we have both key and value
-                    .collect(Collectors.toMap(parts -> parts[0], parts -> parts[1]));
         } else {
             throw new IllegalArgumentException("Unsupported input type");
         }
