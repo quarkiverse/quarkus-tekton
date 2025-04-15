@@ -1,5 +1,8 @@
 package io.quarkiverse.tekton.cli.task;
 
+import java.nio.file.Path;
+import java.util.*;
+
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.TaskRun;
@@ -14,9 +17,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
-
-import java.nio.file.Path;
-import java.util.*;
 
 @Command(name = "exec", header = "Execute Tekton task.")
 public class TaskExec extends AbstractTaskCommand {
