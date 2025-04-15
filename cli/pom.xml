@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.tekton</groupId>
-            <artifactId>quarkus-tekton</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkiverse.tekton</groupId>
             <artifactId>quarkus-tekton-common</artifactId>
             <version>${project.version}</version>
         </dependency>
