@@ -63,6 +63,8 @@ public final class Params {
         String[] arrayVal = value instanceof String[] ? (String[]) value : null;
         Map<String, String> objectVal = value instanceof Map ? (Map) value : null;
 
+        // TODO: There could be edge cases where a param contains string enclosed in single or double quotes where space could be allowed inside them. Such
+        // cases are not yet supported !
         if (value instanceof String) {
             // Try to split the content of the string to see if the content could be split into an array
             // using as separator a space
