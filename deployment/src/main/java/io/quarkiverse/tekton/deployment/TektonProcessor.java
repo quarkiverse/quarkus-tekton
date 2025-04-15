@@ -65,7 +65,9 @@ public class TektonProcessor {
         resources.add(aPipeline);
 
         // PipelineRun
-        resources.add(new BuildTestPushPipelineRun().create(name, aPipeline, Optional.of(config.pipelinerun().params())));
+        if (config.pipelinerun().enabled()) {
+            resources.add(new BuildTestPushPipelineRun().create(name, aPipeline, Optional.of(config.pipelinerun().params())));
+        }
 
         generatedTektonResources.produce(new GeneratedTektonResourceBuildItem(resources));
     }
