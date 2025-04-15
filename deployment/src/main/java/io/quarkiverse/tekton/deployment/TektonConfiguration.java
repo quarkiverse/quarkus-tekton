@@ -13,11 +13,17 @@ import io.smallrye.config.WithDefault;
 public interface TektonConfiguration {
 
     /**
-     * PipelineRun arguments to be passed as parameters
+     * PipelineRun configuration
      */
     PipelineRun pipelinerun();
 
     interface PipelineRun {
+        /**
+         * Whether to enable the tekton generation at build time of the PipelineRun.
+         */
+        @WithDefault("true")
+        boolean enabled();
+
         /**
          * User's arguments to customize the pipeline
          */
