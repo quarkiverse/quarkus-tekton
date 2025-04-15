@@ -195,6 +195,10 @@ spec:
       buildah images --format '{{ .Name }}:{{ .Tag }}@{{ .Digest }}' | grep -v $IMAGE > $(results.BASE_IMAGES_DIGESTS.path)
 
     securityContext:
+      # The following parameter allows to build the image when tekton runs in a github workflow
+      # privileged: true
+      # capabilities: SETFCAP
+      privileged: true
       capabilities:
         add:
           - SETFCAP
@@ -355,11 +359,14 @@ spec:
     # per https://kubernetes.io/docs/concepts/containers/images/#imagepullpolicy-defaulting
     # the cluster will set imagePullPolicy to IfNotPresent
     # also per direction from Ralph Bean, we want to use image digest based tags to use a cue to automation like dependabot or renovatebot to periodially submit pull requests that update the digest as new images are released.
+    # TODO: Find a way to use the TLSVERIFY parameter for --allow-insecure-registry.
+    # Take care as the boolean value should be true here to skip TLS verification vs buildah push or git clone where this is false
     args:
       - attach
       - sbom
       - --sbom
       - sbom-cyclonedx.json
+      - --allow-insecure-registry=true
       - --type
       - cyclonedx
       - $(params.IMAGE)
