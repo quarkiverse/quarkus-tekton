@@ -97,10 +97,7 @@ public class TaskExec extends AbstractTaskCommand {
             }
 
             // Convert the arguments passed by the Cli command as List<String> into a Map<String,String> where the key is equal is the left part of key=val
-            List<Param> params = Params.create(taskArgs.stream()
-                    .map(s -> s.split("=", 2)) // Split each string into at most two parts
-                    .filter(parts -> parts.length == 2) // Ensure we have both key and value
-                    .collect(Collectors.toMap(parts -> parts[0], parts -> parts[1])));
+            List<Param> params = Params.create(taskArgs);
 
             for (WorkspaceBinding binding : workspaceBindings) {
                 WorkspaceBindings.createIfNeeded(binding);
