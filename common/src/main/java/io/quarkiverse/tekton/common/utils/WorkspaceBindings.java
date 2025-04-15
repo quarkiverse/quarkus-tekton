@@ -47,13 +47,19 @@ public class WorkspaceBindings {
     public static void readClusterConfigMaps() throws KubernetesClientException {
         CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().list()
                 .getItems().stream()
-                .collect(Collectors.toMap(c -> c.getMetadata().getName(), Function.identity())));
+                .collect(Collectors.toMap(
+                        // Use a composite key to avoid java.util.stream.Collectors.duplicateKeyException
+                        c -> c.getMetadata().getNamespace() + "/" + c.getMetadata().getName(),
+                        Function.identity())));
     }
 
     public static void readClusterSecrets() throws KubernetesClientException {
         SECRETS.putAll(Clients.kubernetes().secrets().list()
                 .getItems().stream()
-                .collect(Collectors.toMap(s -> s.getMetadata().getName(), Function.identity())));
+                .collect(Collectors.toMap(
+                        // Use a composite key to avoid java.util.stream.Collectors.duplicateKeyException
+                        s -> s.getMetadata().getNamespace() + "/" + s.getMetadata().getName(),
+                        Function.identity())));
     }
 
     public static void readBindingResources(List<HasMetadata> resources) {

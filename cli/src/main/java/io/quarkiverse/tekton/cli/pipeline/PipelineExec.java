@@ -1,7 +1,6 @@
 package io.quarkiverse.tekton.cli.pipeline;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.tekton.v1.Param;
@@ -69,11 +68,8 @@ public class PipelineExec extends AbstractPipelineCommand {
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("No PipelineRun found"));
 
-            // Convert the arguments passed by the Cli command as List<String> into a Map<String,String> where the key is equal is the left part of key=val
-            List<Param> params = Params.create(pipelineArgs.stream()
-                    .map(s -> s.split("=", 2)) // Split each string into at most two parts
-                    .filter(parts -> parts.length == 2) // Ensure we have both key and value
-                    .collect(Collectors.toMap(parts -> parts[0], parts -> parts[1])));
+            // Convert the arguments passed by the CLI command as List<String> into a Map<String,String> where the key is equal to the left part of key=val
+            List<Param> params = Params.create(pipelineArgs);
 
             pipelineRun.getSpec().setParams(params);
 
