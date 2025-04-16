@@ -38,13 +38,13 @@ public class WorkspaceBindings {
         readClusterSecrets();
     }
 
-    public static void readClusterPvcs() throws KubernetesClientException {
+    public static void readClusterPvcs() {
         PVC_CLAIMS.putAll(Clients.kubernetes().persistentVolumeClaims().list()
                 .getItems().stream()
                 .collect(Collectors.toMap(p -> p.getMetadata().getName(), Function.identity())));
     }
 
-    public static void readClusterConfigMaps() throws KubernetesClientException {
+    public static void readClusterConfigMaps() {
         CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().list()
                 .getItems().stream()
                 .collect(Collectors.toMap(
@@ -53,7 +53,7 @@ public class WorkspaceBindings {
                         Function.identity())));
     }
 
-    public static void readClusterSecrets() throws KubernetesClientException {
+    public static void readClusterSecrets() {
         SECRETS.putAll(Clients.kubernetes().secrets().list()
                 .getItems().stream()
                 .collect(Collectors.toMap(
