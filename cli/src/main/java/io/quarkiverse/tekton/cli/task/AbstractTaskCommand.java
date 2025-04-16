@@ -9,9 +9,9 @@ import jakarta.inject.Inject;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.quarkiverse.tekton.cli.common.Clients;
 import io.quarkiverse.tekton.cli.common.GenerationBaseCommand;
 import io.quarkiverse.tekton.cli.common.OutputOptionMixin;
-import io.quarkiverse.tekton.common.utils.Clients;
 import picocli.CommandLine.Mixin;
 
 public abstract class AbstractTaskCommand extends GenerationBaseCommand {

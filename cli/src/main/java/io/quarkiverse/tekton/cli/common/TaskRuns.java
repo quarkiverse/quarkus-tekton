@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.fabric8.kubernetes.client.KubernetesClientTimeoutException;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.quarkiverse.tekton.common.utils.Clients;
 
 public final class TaskRuns {
 

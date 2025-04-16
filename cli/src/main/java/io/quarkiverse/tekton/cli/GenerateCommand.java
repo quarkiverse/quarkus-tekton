@@ -29,6 +29,6 @@ public class GenerateCommand extends GenerationBaseCommand {
         Path dotTekton = root.resolve(".tekton");
 
         writeStringSafe(dotTekton.resolve("tekton.json"), json);
-        writeStringSafe(dotTekton.resolve("tekton.yml"), yaml.toString());
+        writeStringSafe(dotTekton.resolve("tekton.yml"), yaml);
     }
 }

@@ -5,9 +5,9 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
 import io.fabric8.tekton.v1.*;
 import io.quarkiverse.tekton.common.utils.Params;
-import io.quarkiverse.tekton.common.utils.WorkspaceBindings;
 
 public class BuildTestPushPipelineRun {
     private static final Logger log = LoggerFactory.getLogger(BuildTestPushPipelineRun.class);
@@ -42,8 +42,10 @@ public class BuildTestPushPipelineRun {
              * : Optional.empty())
              * .ifPresent(workspaceBindings::add);
              */
-            WorkspaceBindings.forEmpty(projectName, workspaceName).ifPresent(workspaceBindings::add);
 
+            // WorkspaceBindings.forEmpty(projectName, workspaceName).ifPresent(workspaceBindings::add);
+            workspaceBindings.add(new WorkspaceBindingBuilder().withName(workspaceName)
+                    .withEmptyDir(new EmptyDirVolumeSourceBuilder().build()).build());
         });
 
         // Convert the user's arguments to the pipelinerun params

@@ -1,4 +1,4 @@
-package io.quarkiverse.tekton.common.utils;
+package io.quarkiverse.tekton.cli.common;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;

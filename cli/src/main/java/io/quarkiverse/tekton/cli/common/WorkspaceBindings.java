@@ -1,4 +1,4 @@
-package io.quarkiverse.tekton.common.utils;
+package io.quarkiverse.tekton.cli.common;
 
 import java.util.HashMap;
 import java.util.List;
