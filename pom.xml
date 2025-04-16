@@ -34,6 +34,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <quarkus.version>3.19.2</quarkus.version>
+        <jandex.version>3.3.0</jandex.version>
         <!--<quarkus.version>999-SNAPSHOT</quarkus.version>-->
         <quarkus-tektonclient.version>1.1.0</quarkus-tektonclient.version>
         <kubernetes-client.version>7.1.0</kubernetes-client.version>
@@ -52,13 +53,17 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex</artifactId>
+                <version>${jandex.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>kubernetes-client-bom</artifactId>
                 <version>${kubernetes-client.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
