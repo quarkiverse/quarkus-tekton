@@ -83,24 +83,16 @@ public class TektonProcessor {
 
         List<HasMetadata> allTektonResources = generatedTektonResources.stream().flatMap(r -> r.getResources().stream())
                 .collect(Collectors.toList());
-        //String yaml = Serialization.asYaml(allTektonResources);
-        String json = Serialization.asYaml(allTektonResources);
-
-        // Iterate through the list of the resources to process them individually to include ---
-        // as separator between them instead of a list of items
-        StringBuilder yamlOutput = new StringBuilder();
-        for (HasMetadata resource : allTektonResources) {
-            String yaml = io.fabric8.kubernetes.client.utils.Serialization.asYaml(resource).trim();
-            yamlOutput.append(yaml).append("\n");
-        }
+        String yaml = Serialization.asYaml(allTektonResources);
+        String json = Serialization.asJson(allTektonResources);
 
         Path resourcePathYaml = tektonOutputPath.resolve("tekton.yaml");
         generatedFileSystemResources
                 .produce(new GeneratedFileSystemResourceBuildItem(resourcePathYaml.toString(),
-                        yamlOutput.toString().getBytes()));
+                        yaml.getBytes()));
         generatedKubernetesResources
                 .produce(new GeneratedKubernetesResourceBuildItem(resourcePathYaml.toString(),
-                        yamlOutput.toString().getBytes()));
+                        yaml.getBytes()));
 
         Path resourcePathJson = tektonOutputPath.resolve("tekton.json");
         generatedFileSystemResources

@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Properties;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.client.utils.Serialization;
 import io.quarkiverse.tekton.cli.common.GenerationBaseCommand;
 import io.quarkiverse.tekton.common.utils.Projects;
+import io.quarkiverse.tekton.common.utils.Serialization;
 import picocli.CommandLine.Command;
 
 @SuppressWarnings("rawtypes")
@@ -23,19 +23,12 @@ public class GenerateCommand extends GenerationBaseCommand {
     @Override
     public void process(List<HasMetadata> resources) {
         String json = Serialization.asJson(resources);
-
-        // Iterate through the list of the resources to process them individually to include ---
-        // as separator between them instead of a list of items
-        StringBuilder yamlOutput = new StringBuilder();
-        for (HasMetadata resource : resources) {
-            String yaml = Serialization.asYaml(resource).trim();
-            yamlOutput.append(yaml).append("\n");
-        }
+        String yaml = Serialization.asYaml(resources);
 
         Path root = Projects.getProjectRoot();
         Path dotTekton = root.resolve(".tekton");
 
         writeStringSafe(dotTekton.resolve("tekton.json"), json);
-        writeStringSafe(dotTekton.resolve("tekton.yml"), yamlOutput.toString());
+        writeStringSafe(dotTekton.resolve("tekton.yml"), yaml.toString());
     }
 }
