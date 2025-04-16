@@ -238,6 +238,27 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`true`
 
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-enabled[`quarkus.tekton.pipelinerun.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.pipelinerun.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Whether to enable the tekton generation at build time of the PipelineRun.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_PIPELINERUN_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_PIPELINERUN_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`true`
+
 a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-params-params]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-params-params[`quarkus.tekton.pipelinerun.params."params"`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.pipelinerun.params."params"+++[]

@@ -3,7 +3,6 @@ package io.quarkiverse.tekton.common.utils;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,20 +25,14 @@ class ParamsTest {
 
     @Test
     void testCreateWithOddListValue() {
-        Map<String, String> paramsMap = new LinkedHashMap<>();
-        paramsMap.put("myKey", "myValue");
-
-        List<Param> param = Params.create(paramsMap);
+        List<Param> param = Params.create(List.of("myKey=myValue"));
         assertNotNull(param, "Param should not be null");
         assertFalse(param.isEmpty(), "Param should not be empty");
         Param p0 = param.get(0);
         assertEquals("myKey", p0.getName());
         assertEquals("myValue", p0.getValue().getStringVal());
 
-        paramsMap = new LinkedHashMap<>();
-        paramsMap.put("myKey", "myValue");
-        paramsMap.put("myKey2", "myValue2");
-        param = Params.create(paramsMap);
+        param = Params.create(List.of("myKey=myValue", "myKey2", "myValue2"));
         assertNotNull(param, "Param should not be null");
         assertFalse(param.isEmpty(), "Param should not be empty");
         p0 = param.get(0);
@@ -53,13 +46,8 @@ class ParamsTest {
 
     @Test
     void testCreateWithEvenListValue() {
-        Map<String, String> paramsMap = new LinkedHashMap<>();
-        paramsMap.put("myKey", "myValue");
-        paramsMap.put("myOtherKey", "myOtherValue");
-        paramsMap.put("thridKey", "thirdValue");
-        paramsMap.put("forthKey", "forthValue");
-
-        List<Param> param = Params.create(paramsMap);
+        List<Param> param = Params.create(
+                List.of("myKey", "myValue", "myOtherKey", "myOtherValue", "thridKey=thirdValue", "forthKey forthValue"));
         assertNotNull(param, "Param should not be null");
         assertFalse(param.isEmpty(), "Param should not be empty");
         Param p0 = param.get(0);
