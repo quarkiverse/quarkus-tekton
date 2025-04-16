@@ -30,11 +30,20 @@ public class BuildTestPushPipelineRun {
         pipeline.getSpec().getWorkspaces().forEach(w -> {
             String workspaceName = w.getName();
 
-            WorkspaceBindings.forName(projectName, workspaceName)
-                    .or(() -> !Boolean.TRUE.equals(w.getOptional())
-                            ? WorkspaceBindings.forEmpty(projectName, workspaceName)
-                            : Optional.empty())
-                    .ifPresent(workspaceBindings::add);
+            /**
+             * TODO: As documented on the PR - https://github.com/quarkiverse/quarkus-tekton/pull/31, the code hereafter should
+             * be
+             * reviewed as it must only be executed at runtime when a cluster exists like resources: pipeline(run), pvc,
+             * secrets, configmaps
+             *
+             * WorkspaceBindings.forName(projectName, workspaceName)
+             * .or(() -> !Boolean.TRUE.equals(w.getOptional())
+             * ? WorkspaceBindings.forEmpty(projectName, workspaceName)
+             * : Optional.empty())
+             * .ifPresent(workspaceBindings::add);
+             */
+            WorkspaceBindings.forEmpty(projectName, workspaceName).ifPresent(workspaceBindings::add);
+
         });
 
         // Convert the user's arguments to the pipelinerun params
