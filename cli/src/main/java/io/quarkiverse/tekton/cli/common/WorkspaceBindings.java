@@ -48,8 +48,10 @@ public class WorkspaceBindings {
         CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().list()
                 .getItems().stream()
                 .collect(Collectors.toMap(
-                        // Use a composite key to avoid java.util.stream.Collectors.duplicateKeyException
-                        c -> c.getMetadata().getNamespace() + "/" + c.getMetadata().getName(),
+                        // TODO: Reverting the code to a simple key BUT we should improve the code as
+                        // there is still a possibility to get a: java.util.stream.Collectors.duplicateKeyException
+                        // c -> c.getMetadata().getNamespace() + "/" + c.getMetadata().getName(),
+                        c -> c.getMetadata().getName(),
                         Function.identity())));
     }
 
@@ -57,8 +59,10 @@ public class WorkspaceBindings {
         SECRETS.putAll(Clients.kubernetes().secrets().list()
                 .getItems().stream()
                 .collect(Collectors.toMap(
-                        // Use a composite key to avoid java.util.stream.Collectors.duplicateKeyException
-                        s -> s.getMetadata().getNamespace() + "/" + s.getMetadata().getName(),
+                        // TODO: Reverting the code to a simple key BUT we should improve the code as
+                        // there is still a possibility to get a: java.util.stream.Collectors.duplicateKeyException
+                        // c -> c.getMetadata().getNamespace() + "/" + c.getMetadata().getName(),
+                        c -> c.getMetadata().getName(),
                         Function.identity())));
     }
 
