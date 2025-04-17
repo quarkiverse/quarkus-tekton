@@ -207,7 +207,8 @@ jobs:
             output-image=$GITEA_HOST/$REPO_ORG/$REPO_NAME:latest \
             url=https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git \
             sslVerify=false \
-            privileged=true
+            privileged=true \
+            mavenGoals="-Dquarkus.container-image.build=false -Dquarkus.container-image.push=false -Dquarkus.container-image.image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job package"
           
           popd
 
