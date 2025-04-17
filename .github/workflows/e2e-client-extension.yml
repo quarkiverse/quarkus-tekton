@@ -222,7 +222,7 @@ jobs:
           echo "#########################################"
           for i in `seq 20`; do
             if [[ $(get_pipelineruns_length) -gt 0 ]]; then
-              tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run -f
+              tkn pipelinerun logs -n ${KUBE_NAMESPACE} code-with-quarkus-run -f
             else
               echo "#########################################"
               echo "Wait till the pipelinerun is running ..."
@@ -256,12 +256,12 @@ jobs:
           echo "#########################################"
           echo "List/describe and show the status of the resource ...."
           echo "#########################################"
-          $SCRIPTS/listShowDescribeResource.sh pipelinerun/build-test-push-run ${KUBE_NAMESPACE}
+          $SCRIPTS/listShowDescribeResource.sh pipelinerun/code-with-quarkus-run ${KUBE_NAMESPACE}
           
           echo "#########################################"
           echo "PipelineRun log ...."
           echo "#########################################"
-          tkn pipelinerun logs -n ${KUBE_NAMESPACE} build-test-push-run
+          tkn pipelinerun logs -n ${KUBE_NAMESPACE} code-with-quarkus-run
           
 
           
