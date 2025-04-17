@@ -39,26 +39,24 @@ public class WorkspaceBindings {
     }
 
     public static void readClusterPvcs() {
-        PVC_CLAIMS.putAll(Clients.kubernetes().persistentVolumeClaims().list()
+        PVC_CLAIMS.putAll(Clients.kubernetes().persistentVolumeClaims().inNamespace(Clients.getNamespace()).list()
                 .getItems().stream()
                 .collect(Collectors.toMap(p -> p.getMetadata().getName(), Function.identity())));
     }
 
     public static void readClusterConfigMaps() {
-        CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().list()
+        CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().inNamespace(Clients.getNamespace()).list()
                 .getItems().stream()
                 .collect(Collectors.toMap(
-                        // Use a composite key to avoid java.util.stream.Collectors.duplicateKeyException
-                        c -> c.getMetadata().getNamespace() + "/" + c.getMetadata().getName(),
+                        c -> c.getMetadata().getName(),
                         Function.identity())));
     }
 
     public static void readClusterSecrets() {
-        SECRETS.putAll(Clients.kubernetes().secrets().list()
+        SECRETS.putAll(Clients.kubernetes().secrets().inNamespace(Clients.getNamespace()).list()
                 .getItems().stream()
                 .collect(Collectors.toMap(
-                        // Use a composite key to avoid java.util.stream.Collectors.duplicateKeyException
-                        s -> s.getMetadata().getNamespace() + "/" + s.getMetadata().getName(),
+                        c -> c.getMetadata().getName(),
                         Function.identity())));
     }
 
@@ -227,8 +225,8 @@ public class WorkspaceBindings {
                 .map(k -> PVC_CLAIMS.get(k));
 
         pvc.ifPresent(r -> {
-            if (Clients.kubernetes().resource(r).get() == null) {
-                Clients.kubernetes().resource(r).create();
+            if (Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).get() == null) {
+                Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).create();
             }
         });
 
@@ -238,8 +236,8 @@ public class WorkspaceBindings {
                 .map(k -> CONFIG_MAPS.get(k));
 
         configMap.ifPresent(r -> {
-            if (Clients.kubernetes().resource(r).get() == null) {
-                Clients.kubernetes().resource(r).create();
+            if (Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).get() == null) {
+                Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).create();
             }
         });
 
@@ -248,8 +246,8 @@ public class WorkspaceBindings {
                 .map(k -> SECRETS.get(k));
 
         configMap.ifPresent(r -> {
-            if (Clients.kubernetes().resource(r).get() == null) {
-                Clients.kubernetes().resource(r).create();
+            if (Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).get() == null) {
+                Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).create();
             }
         });
 

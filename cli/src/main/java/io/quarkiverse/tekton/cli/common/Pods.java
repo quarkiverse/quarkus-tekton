@@ -18,14 +18,15 @@ public class Pods {
         try {
             // Just wait until the pod is created
             try {
-                for (int i = 0; i < 10 && Clients.kubernetes().pods().withName(pod).get() == null; i++) {
+                for (int i = 0; i < 10
+                        && Clients.kubernetes().pods().inNamespace(Clients.getNamespace()).withName(pod).get() == null; i++) {
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException e) {
                 //ignore
             }
 
-            Clients.kubernetes().pods().withName(pod).waitUntilCondition(p -> {
+            Clients.kubernetes().pods().inNamespace(Clients.getNamespace()).withName(pod).waitUntilCondition(p -> {
                 return !isPending(p);
             }, 15, TimeUnit.SECONDS);
         } catch (KubernetesClientTimeoutException e) {

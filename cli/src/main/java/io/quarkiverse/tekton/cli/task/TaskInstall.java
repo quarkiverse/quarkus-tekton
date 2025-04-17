@@ -32,6 +32,7 @@ public class TaskInstall extends AbstractTaskCommand {
             throw new IllegalArgumentException("A task name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
 
@@ -43,11 +44,11 @@ public class TaskInstall extends AbstractTaskCommand {
             HasMetadata resource = getProjectTask(name)
                     .orElseThrow(() -> new IllegalArgumentException("Task " + name + " not found."));
             if (resource instanceof io.fabric8.tekton.v1.Task v1Task) {
-                Clients.kubernetes().resource(v1Task).serverSideApply();
+                Clients.kubernetes().resource(v1Task).inNamespace(Clients.getNamespace()).serverSideApply();
                 addInstalledTask(v1Task);
 
             } else if (resource instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
-                Clients.kubernetes().resource(v1beta1Task).serverSideApply();
+                Clients.kubernetes().resource(v1beta1Task).inNamespace(Clients.getNamespace()).serverSideApply();
                 addInstalledTask(v1beta1Task);
             }
         }

@@ -27,21 +27,23 @@ public final class PipelineRuns {
      * @param name the name of the PipelineRun
      */
     public static void log(String name) {
-        Clients.kubernetes().pods().withLabel(PIPELINERUN_LABEL, name).list().getItems().forEach(p -> {
-            String podName = p.getMetadata().getName();
-            waitIfPending(podName);
+        Clients.kubernetes().pods().inNamespace(Clients.getNamespace()).withLabel(PIPELINERUN_LABEL, name).list().getItems()
+                .forEach(p -> {
+                    String podName = p.getMetadata().getName();
+                    waitIfPending(podName);
 
-            p.getSpec().getContainers().forEach(container -> {
-                try (LogWatch watch = Clients.kubernetes().pods().withName(p.getMetadata().getName())
-                        .inContainer(container.getName())
-                        .tailingLines(10).watchLog(System.out)) {
-                    Clients.kubernetes().pods().withName(p.getMetadata().getName())
-                            .waitUntilCondition(pod -> isCompleted(pod, container.getName()), 10L, TimeUnit.MINUTES);
-                } catch (KubernetesClientTimeoutException e) {
-                    // ignore
-                }
-                System.out.flush();
-            });
-        });
+                    p.getSpec().getContainers().forEach(container -> {
+                        try (LogWatch watch = Clients.kubernetes().pods().inNamespace(Clients.getNamespace())
+                                .withName(p.getMetadata().getName())
+                                .inContainer(container.getName())
+                                .tailingLines(10).watchLog(System.out)) {
+                            Clients.kubernetes().pods().inNamespace(Clients.getNamespace()).withName(p.getMetadata().getName())
+                                    .waitUntilCondition(pod -> isCompleted(pod, container.getName()), 10L, TimeUnit.MINUTES);
+                        } catch (KubernetesClientTimeoutException e) {
+                            // ignore
+                        }
+                        System.out.flush();
+                    });
+                });
     }
 }

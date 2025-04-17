@@ -31,6 +31,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
             throw new IllegalArgumentException("A pipeline name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledPipelines();
         readProjectPipelines(resources);
         List<String> uninstalled = new ArrayList<>();
@@ -42,7 +43,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
 
             getProjectPipeline(name).ifPresentOrElse(resource -> {
                 if (resource instanceof io.fabric8.tekton.v1.Pipeline v1Pipeline) {
-                    Clients.kubernetes().resource(v1Pipeline).delete();
+                    Clients.kubernetes().resource(v1Pipeline).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledPipeline(v1Pipeline) != null) {
                         uninstalled.add(name);
                     } else {
@@ -50,7 +51,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
                     }
 
                 } else if (resource instanceof io.fabric8.tekton.v1beta1.Pipeline v1beta1Pipeline) {
-                    Clients.kubernetes().resource(v1beta1Pipeline).delete();
+                    Clients.kubernetes().resource(v1beta1Pipeline).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledPipeline(v1beta1Pipeline) != null) {
                         uninstalled.add(name);
                     } else {
