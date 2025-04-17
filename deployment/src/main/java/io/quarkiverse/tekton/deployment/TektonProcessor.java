@@ -3,12 +3,15 @@ package io.quarkiverse.tekton.deployment;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.tekton.v1.Pipeline;
 import io.quarkiverse.tekton.cm.MavenSettingsCm;
 import io.quarkiverse.tekton.common.utils.Serialization;
 import io.quarkiverse.tekton.pipeline.BuildTestPushPipeline;
+import io.quarkiverse.tekton.pipelinerun.BuildTestPushPipelineRun;
 import io.quarkiverse.tekton.pvc.MavenRepoPvc;
 import io.quarkiverse.tekton.pvc.ProjectWorkspacePvc;
 import io.quarkiverse.tekton.spi.GeneratedTektonResourceBuildItem;
@@ -58,7 +61,13 @@ public class TektonProcessor {
         resources.add(BuildahTask.create());
 
         // Pipelines
-        resources.add(new BuildTestPushPipeline().create());
+        Pipeline aPipeline = new BuildTestPushPipeline().create();
+        resources.add(aPipeline);
+
+        // PipelineRun
+        if (config.pipelinerun().enabled()) {
+            resources.add(new BuildTestPushPipelineRun().create(name, aPipeline, Optional.of(config.pipelinerun().params())));
+        }
 
         generatedTektonResources.produce(new GeneratedTektonResourceBuildItem(resources));
     }
@@ -75,13 +84,15 @@ public class TektonProcessor {
         List<HasMetadata> allTektonResources = generatedTektonResources.stream().flatMap(r -> r.getResources().stream())
                 .collect(Collectors.toList());
         String yaml = Serialization.asYaml(allTektonResources);
-        String json = Serialization.asYaml(allTektonResources);
+        String json = Serialization.asJson(allTektonResources);
 
         Path resourcePathYaml = tektonOutputPath.resolve("tekton.yaml");
         generatedFileSystemResources
-                .produce(new GeneratedFileSystemResourceBuildItem(resourcePathYaml.toString(), yaml.getBytes()));
+                .produce(new GeneratedFileSystemResourceBuildItem(resourcePathYaml.toString(),
+                        yaml.getBytes()));
         generatedKubernetesResources
-                .produce(new GeneratedKubernetesResourceBuildItem(resourcePathYaml.toString(), yaml.getBytes()));
+                .produce(new GeneratedKubernetesResourceBuildItem(resourcePathYaml.toString(),
+                        yaml.getBytes()));
 
         Path resourcePathJson = tektonOutputPath.resolve("tekton.json");
         generatedFileSystemResources

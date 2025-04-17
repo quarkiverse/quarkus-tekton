@@ -16,6 +16,11 @@
         <artifactId>tekton-model</artifactId>
         <optional>true</optional>
       </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>tekton-client</artifactId>
+            <version>${kubernetes-client.version}</version>
+        </dependency>
       <dependency>
         <groupId>io.quarkiverse.tekton</groupId>
         <artifactId>quarkus-tekton-spi</artifactId>
