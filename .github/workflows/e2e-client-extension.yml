@@ -30,7 +30,7 @@ env:
   REPO_NAME: my-quarkus-app-job
   REPO_DESCRIPTION: "Quarkus HelloWorld git repository"
 
-  PROJECT_NAME: code-with-quarkus
+  PROJECT_NAME: my-quarkus-hello
 
   # This namespace will be used to build/deploy the generated quarkus app
   KUBE_NAMESPACE: demo
@@ -150,14 +150,13 @@ jobs:
           
           TMP_DIR=$(mktemp -d)
           pushd $TMP_DIR
-          quarkus create app
-          cd code-with-quarkus
-          
+
           quarkus create app \
             --name my-quarkus-hello \
             dev.snowdrop:my-quarkus-hello:0.1.0 \
             -x helm,container-image-podman,rest \
             --wrapper
+          cd my-quarkus-hello
           
           git init
           
@@ -223,7 +222,7 @@ jobs:
           echo "#########################################"
           for i in `seq 20`; do
             if [[ $(get_pipelineruns_length) -gt 0 ]]; then
-              tkn pipelinerun logs -n ${KUBE_NAMESPACE} code-with-quarkus-run -f
+              tkn pipelinerun logs -n ${KUBE_NAMESPACE} $PROJECT_NAME-run -f
             else
               echo "#########################################"
               echo "Wait till the pipelinerun is running ..."
@@ -257,12 +256,12 @@ jobs:
           echo "#########################################"
           echo "List/describe and show the status of the resource ...."
           echo "#########################################"
-          $SCRIPTS/listShowDescribeResource.sh pipelinerun/code-with-quarkus-run ${KUBE_NAMESPACE}
+          $SCRIPTS/listShowDescribeResource.sh pipelinerun/$PROJECT_NAME-run ${KUBE_NAMESPACE}
           
           echo "#########################################"
           echo "PipelineRun log ...."
           echo "#########################################"
-          tkn pipelinerun logs -n ${KUBE_NAMESPACE} code-with-quarkus-run
+          tkn pipelinerun logs -n ${KUBE_NAMESPACE} $PROJECT_NAME-run
           
 
           
