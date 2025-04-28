@@ -37,11 +37,15 @@ public class TaskExec extends AbstractTaskCommand {
 
     @Override
     public void process(List<HasMetadata> resources) {
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
+
         WorkspaceBindings.readBindingResources(resources);
+
         Path projectRootDirPath = Projects.getProjectRoot();
         String projectName = Projects.getArtifactId(projectRootDirPath);
+
         if (regenerate) {
             getProjectTask(taskName).ifPresentOrElse(t -> {
                 Clients.kubernetes().resource(t).serverSideApply();

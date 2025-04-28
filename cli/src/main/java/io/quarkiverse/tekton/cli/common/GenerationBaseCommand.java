@@ -131,13 +131,13 @@ public abstract class GenerationBaseCommand implements Callable<Integer> {
 
         Path projectRoot = getWorkingDirectory();
         BuildTool buildTool = QuarkusProjectHelper.detectExistingBuildTool(projectRoot);
-        Path targetDirecotry = projectRoot.resolve(buildTool.getBuildDirectory());
+        Path targetDirectory = projectRoot.resolve(buildTool.getBuildDirectory());
         QuarkusBootstrap quarkusBootstrap = QuarkusBootstrap.builder()
                 .setMode(QuarkusBootstrap.Mode.PROD)
                 .setBuildSystemProperties(getBuildSystemProperties())
                 .setApplicationRoot(getWorkingDirectory())
                 .setProjectRoot(getWorkingDirectory())
-                .setTargetDirectory(targetDirecotry)
+                .setTargetDirectory(targetDirectory)
                 .setIsolateDeployment(false)
                 .setRebuild(true)
                 .setTest(false)

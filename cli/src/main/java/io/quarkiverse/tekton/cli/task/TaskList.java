@@ -15,6 +15,7 @@ public class TaskList extends AbstractTaskCommand {
 
     @Override
     public void process(List<HasMetadata> resources) {
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
 
