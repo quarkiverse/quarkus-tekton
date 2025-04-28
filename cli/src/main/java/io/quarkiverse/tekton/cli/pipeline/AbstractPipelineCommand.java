@@ -31,14 +31,10 @@ public abstract class AbstractPipelineCommand extends GenerationBaseCommand {
     void checkNamespace() {
         // If the argument of the CLI command --namespace has been provided, we use it, otherwise we check
         // if the namespace has been set using the kubernetes context and config
-        if (namespace.isPresent()) {
-            Clients.setNamespace(namespace.get());
-        } else {
-            Clients.setNamespace(namespace
-                    .or(() -> Optional.ofNullable(Clients.kubernetes().getNamespace()))
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "No user's namespace provided using the kubecontext or CLI command's argument: --namespace")));
-        }
+        Clients.setNamespace(namespace
+                .or(() -> Optional.ofNullable(Clients.kubernetes().getNamespace()))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No user's namespace provided using the kubecontext or CLI command's argument: --namespace")));
     }
 
     void readInstalledPipelines() {
