@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.quarkiverse.tekton</groupId>
         <artifactId>quarkus-tekton-parent</artifactId>
-        <version>0.0.1</version>
+        <version>999-SNAPSHOT</version>
     </parent>
     <artifactId>quarkus-tekton-integration-tests</artifactId>
     <name>Quarkus Tekton - Integration Tests</name>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>io.quarkiverse.tekton</groupId>
             <artifactId>quarkus-tekton-cli</artifactId>
-            <version>0.0.1</version>
+            <version>999-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -5,12 +5,12 @@
     <parent>
       <groupId>io.quarkiverse.tekton</groupId>
       <artifactId>quarkus-tekton-parent</artifactId>
-      <version>0.0.1</version>
+      <version>999-SNAPSHOT</version>
     </parent>
 
     <artifactId>quarkus-tekton-cli</artifactId>
     <name>Quarkus Tekton - CLI</name>
-    <version>0.0.1</version>
+    <version>999-SNAPSHOT</version>
 
     <properties>
         <quarkus.package.jar.type>uber-jar</quarkus.package.jar.type>
