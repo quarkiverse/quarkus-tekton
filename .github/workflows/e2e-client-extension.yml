@@ -151,11 +151,12 @@ jobs:
           TMP_DIR=$(mktemp -d)
           pushd $TMP_DIR
 
-          quarkus create app \
-            --name my-quarkus-hello \
-            -x helm,container-image-podman,rest \
-            --wrapper \
-            dev.snowdrop:my-quarkus-hello:0.1.0
+          mvn io.quarkus.platform:quarkus-maven-plugin:$QUARKUS_CLI_VERSION:create \
+            -DprojectGroupId=dev.snowdrop \
+            -DprojectArtifactId=my-quarkus-hello \
+            -DprojectVersion=0.1.0 \
+            -Dextensions=helm,container-image-podman,rest \
+            -DplatformVersion=$QUARKUS_CLI_VERSION
           cd my-quarkus-hello
           
           git init
@@ -179,14 +180,6 @@ jobs:
           
           echo "## Compile the Quarkus HelloWorld project"
           mvn -ntp -B install -DskipTests -Dno-format
-          # 
-          # No need to build/push the image as the Tekton pipeline will do it
-          #
-          #  -Dquarkus.container-image.build=true \
-          #  -Dquarkus.container-image.push=true \
-          #  -Dquarkus.container-image.image=$GITEA_HOST/$REPO_ORG/$REPO_NAME \
-          #  -Dquarkus.container-image.insecure=true \
-          #  -Dquarkus.podman.tls-verify=false
         
           echo "##Generate the Tekton YAML files"
           quarkus tekton generate
@@ -211,7 +204,7 @@ jobs:
           
           popd
 
-      - name: Watch tekton resources ...
+      - name: Watch Tekton resources ...
         run: |
           get_pipelineruns_length() {
             tkn pipelinerun list -n ${KUBE_NAMESPACE} -o json | jq -r '.items | length'
