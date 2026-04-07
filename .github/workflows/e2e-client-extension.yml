@@ -16,13 +16,13 @@ permissions:
   pull-requests: write
 
 env:
-  QUARKUS_CLI_VERSION: 3.21.1
+  QUARKUS_CLI_VERSION: 3.29.4
 
-  IDPBUILDER_VERSION: v0.9.0
+  IDPBUILDER_VERSION: v0.10.1
   IDPCLUSTER_NAME: idplatform
 
   TEKTON_VERSION: v0.60.1
-  TEKTON_CLIENT_VERSION: 0.40.0
+  TEKTON_CLIENT_VERSION: 0.44.0
 
   GITEA_HOST: "gitea.cnoe.localtest.me:8443"
 
@@ -41,13 +41,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
           cache: 'maven'
 
       - name: Build the project with Maven
@@ -151,11 +151,12 @@ jobs:
           TMP_DIR=$(mktemp -d)
           pushd $TMP_DIR
 
-          quarkus create app \
-            --name my-quarkus-hello \
-            dev.snowdrop:my-quarkus-hello:0.1.0 \
-            -x helm,container-image-podman,rest \
-            --wrapper
+          mvn io.quarkus.platform:quarkus-maven-plugin:$QUARKUS_CLI_VERSION:create \
+            -DprojectGroupId=dev.snowdrop \
+            -DprojectArtifactId=my-quarkus-hello \
+            -DprojectVersion=0.1.0 \
+            -Dextensions=helm,container-image-podman,rest \
+            -DplatformVersion=$QUARKUS_CLI_VERSION
           cd my-quarkus-hello
           
           git init
@@ -179,14 +180,6 @@ jobs:
           
           echo "## Compile the Quarkus HelloWorld project"
           mvn -ntp -B install -DskipTests -Dno-format
-          # 
-          # No need to build/push the image as the Tekton pipeline will do it
-          #
-          #  -Dquarkus.container-image.build=true \
-          #  -Dquarkus.container-image.push=true \
-          #  -Dquarkus.container-image.image=$GITEA_HOST/$REPO_ORG/$REPO_NAME \
-          #  -Dquarkus.container-image.insecure=true \
-          #  -Dquarkus.podman.tls-verify=false
         
           echo "##Generate the Tekton YAML files"
           quarkus tekton generate
@@ -211,7 +204,7 @@ jobs:
           
           popd
 
-      - name: Watch tekton resources ...
+      - name: Watch Tekton resources ...
         run: |
           get_pipelineruns_length() {
             tkn pipelinerun list -n ${KUBE_NAMESPACE} -o json | jq -r '.items | length'

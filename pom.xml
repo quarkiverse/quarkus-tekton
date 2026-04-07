@@ -30,12 +30,12 @@
 
     <properties>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <quarkus.version>3.19.2</quarkus.version>
-        <jandex.version>3.3.0</jandex.version>
+        <quarkus.version>3.29.4</quarkus.version>
+
         <!--<quarkus.version>999-SNAPSHOT</quarkus.version>-->
         <quarkus-tektonclient.version>1.1.0</quarkus-tektonclient.version>
         <kubernetes-client.version>7.1.0</kubernetes-client.version>
@@ -53,11 +53,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--
             <dependency>
                 <groupId>io.smallrye</groupId>
                 <artifactId>jandex</artifactId>
                 <version>${jandex.version}</version>
             </dependency>
+            -->
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>kubernetes-client-bom</artifactId>
@@ -75,6 +77,7 @@
                     <groupId>io.quarkus</groupId>
                     <artifactId>quarkus-maven-plugin</artifactId>
                     <version>${quarkus.version}</version>
+                    <extensions>true</extensions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
