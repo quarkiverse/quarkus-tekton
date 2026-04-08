@@ -1,11 +1,7 @@
 package io.quarkiverse.tekton.cli.task;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.tekton.v1.Param;
@@ -22,7 +18,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
 
-@Command(name = "exec", header = "Execute tekton tasks.")
+@Command(name = "exec", header = "Execute Tekton task.")
 public class TaskExec extends AbstractTaskCommand {
 
     @Parameters(index = "0", paramLabel = "TASK", description = "Task name.")
@@ -41,11 +37,15 @@ public class TaskExec extends AbstractTaskCommand {
 
     @Override
     public void process(List<HasMetadata> resources) {
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
+
         WorkspaceBindings.readBindingResources(resources);
+
         Path projectRootDirPath = Projects.getProjectRoot();
         String projectName = Projects.getArtifactId(projectRootDirPath);
+
         if (regenerate) {
             getProjectTask(taskName).ifPresentOrElse(t -> {
                 Clients.kubernetes().resource(t).serverSideApply();
@@ -99,10 +99,8 @@ public class TaskExec extends AbstractTaskCommand {
                 v1Task.getSpec().getParams().forEach(p -> parameters.put(p.getName(), p.getType()));
             }
 
-            List<Param> params = parameters.size() == 1
-                    ? Params.createSingle(parameters.keySet().iterator().next(), parameters.values().iterator().next(),
-                            taskArgs)
-                    : Params.create(taskArgs);
+            // Convert the arguments passed by the Cli command as List<String> into a Map<String,String> where the key is equal is the left part of key=val
+            List<Param> params = Params.create(taskArgs);
 
             for (WorkspaceBinding binding : workspaceBindings) {
                 WorkspaceBindings.createIfNeeded(binding);

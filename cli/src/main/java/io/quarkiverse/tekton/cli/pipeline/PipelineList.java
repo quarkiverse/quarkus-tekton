@@ -5,7 +5,7 @@ import java.util.List;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import picocli.CommandLine.Command;
 
-@Command(name = "list", header = "List qton pipelines. ")
+@Command(name = "list", header = "List Tekton pipelines. ")
 public class PipelineList extends AbstractPipelineCommand {
 
     @Override
@@ -15,6 +15,7 @@ public class PipelineList extends AbstractPipelineCommand {
 
     @Override
     public void process(List<HasMetadata> resources) {
+        checkNamespace();
         readInstalledPipelines();
         readProjectPipelines(resources);
 

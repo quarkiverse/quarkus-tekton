@@ -10,11 +10,11 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "uninstall", header = "Uninstall tekton pipelines.")
+@Command(name = "uninstall", header = "Uninstall Tekton pipelines.")
 public class PipelineUninstall extends AbstractPipelineCommand {
 
     @Option(names = {
-            "--all" }, defaultValue = "", paramLabel = "all", order = 6, description = "Insall all plugins in the catalog.")
+            "--all" }, defaultValue = "", paramLabel = "all", order = 6, description = "Uninstall all the pipelines.")
     boolean all;
 
     @Parameters(index = "0", arity = "0..1", paramLabel = "pipeline", description = "Pipeline name.")
@@ -31,6 +31,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
             throw new IllegalArgumentException("A pipeline name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledPipelines();
         readProjectPipelines(resources);
         List<String> uninstalled = new ArrayList<>();
@@ -42,7 +43,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
 
             getProjectPipeline(name).ifPresentOrElse(resource -> {
                 if (resource instanceof io.fabric8.tekton.v1.Pipeline v1Pipeline) {
-                    Clients.kubernetes().resource(v1Pipeline).delete();
+                    Clients.kubernetes().resource(v1Pipeline).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledPipeline(v1Pipeline) != null) {
                         uninstalled.add(name);
                     } else {
@@ -50,7 +51,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
                     }
 
                 } else if (resource instanceof io.fabric8.tekton.v1beta1.Pipeline v1beta1Pipeline) {
-                    Clients.kubernetes().resource(v1beta1Pipeline).delete();
+                    Clients.kubernetes().resource(v1beta1Pipeline).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledPipeline(v1beta1Pipeline) != null) {
                         uninstalled.add(name);
                     } else {

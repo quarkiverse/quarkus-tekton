@@ -1,11 +1,6 @@
 package io.quarkiverse.tekton.cli.pipeline;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,9 +16,6 @@ import picocli.CommandLine.Mixin;
 
 public abstract class AbstractPipelineCommand extends GenerationBaseCommand {
 
-    @Inject
-    KubernetesClient kubernetesClient;
-
     @Mixin(name = "output")
     OutputOptionMixin output;
 
@@ -33,16 +25,27 @@ public abstract class AbstractPipelineCommand extends GenerationBaseCommand {
     private Map<String, io.fabric8.tekton.v1.Pipeline> projectV1Pipelines = new HashMap<>();
     private Map<String, io.fabric8.tekton.v1beta1.Pipeline> projectV1beta1Pipelines = new HashMap<>();
 
+    @Inject
+    KubernetesClient kubernetesClient;
+
+    void checkNamespace() {
+        // If the argument of the CLI command --namespace has been provided, we use it, otherwise we check
+        // if the namespace has been set using the kubernetes context and config
+        Clients.setNamespace(namespace
+                .or(() -> Optional.ofNullable(Clients.kubernetes().getNamespace()))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No user's namespace provided using the kubecontext or CLI command's argument: --namespace")));
+    }
+
     void readInstalledPipelines() {
         try {
             Clients.use(kubernetesClient);
-            //Clients.use(tektonClient);
 
-            Clients.tekton().v1().pipelines().list().getItems().forEach(t -> {
+            Clients.tekton().v1().pipelines().inNamespace(Clients.getNamespace()).list().getItems().forEach(t -> {
                 installedV1Pipelines.put(t.getMetadata().getName(), t);
             });
 
-            Clients.tekton().v1beta1().pipelines().list().getItems().forEach(t -> {
+            Clients.tekton().v1beta1().pipelines().inNamespace(Clients.getNamespace()).list().getItems().forEach(t -> {
                 installedV1beta1Pipelines.put(t.getMetadata().getName(), t);
             });
         } catch (Exception e) {

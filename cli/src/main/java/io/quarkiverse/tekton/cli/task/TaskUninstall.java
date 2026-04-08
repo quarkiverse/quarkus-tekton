@@ -10,11 +10,11 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "uninstall", header = "Uninstall tekton tasks.")
+@Command(name = "uninstall", header = "Uninstall Tekton tasks.")
 public class TaskUninstall extends AbstractTaskCommand {
 
     @Option(names = {
-            "--all" }, defaultValue = "", paramLabel = "all", order = 6, description = "Insall all plugins in the catalog.")
+            "--all" }, defaultValue = "", paramLabel = "all", order = 6, description = "Install all the tasks.")
     boolean all;
 
     @Parameters(index = "0", arity = "0..1", paramLabel = "TASK", description = "Task name.")
@@ -31,6 +31,7 @@ public class TaskUninstall extends AbstractTaskCommand {
             throw new IllegalArgumentException("A task name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
         List<String> uninstalled = new ArrayList<>();
@@ -42,7 +43,7 @@ public class TaskUninstall extends AbstractTaskCommand {
 
             getProjectTask(name).ifPresentOrElse(resource -> {
                 if (resource instanceof io.fabric8.tekton.v1.Task v1Task) {
-                    Clients.kubernetes().resource(v1Task).delete();
+                    Clients.kubernetes().resource(v1Task).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledTask(v1Task) != null) {
                         uninstalled.add(name);
                     } else {
@@ -50,7 +51,7 @@ public class TaskUninstall extends AbstractTaskCommand {
                     }
 
                 } else if (resource instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
-                    Clients.kubernetes().resource(v1beta1Task).delete();
+                    Clients.kubernetes().resource(v1beta1Task).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledTask(v1beta1Task) != null) {
                         uninstalled.add(name);
                     } else {

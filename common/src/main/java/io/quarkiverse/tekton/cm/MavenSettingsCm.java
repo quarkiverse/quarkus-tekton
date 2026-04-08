@@ -21,7 +21,7 @@ public class MavenSettingsCm {
     public static ConfigMap create(String name) {
         return new ConfigMapBuilder()
                 .withNewMetadata()
-                .withName(name)
+                .withName(name + "-maven-settings")
                 .endMetadata()
                 .addToData("settings.xml", SETTINGS_XML)
                 .build();

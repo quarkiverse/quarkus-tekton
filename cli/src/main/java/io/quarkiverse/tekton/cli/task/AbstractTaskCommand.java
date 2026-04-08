@@ -1,11 +1,6 @@
 package io.quarkiverse.tekton.cli.task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,10 +19,6 @@ public abstract class AbstractTaskCommand extends GenerationBaseCommand {
     @Inject
     KubernetesClient kubernetesClient;
 
-    // TODO: Uncomment when we get a new tektonclinet release
-    //    @Inject
-    //    TektonClient tektonClient;
-
     @Mixin(name = "output")
     OutputOptionMixin output;
 
@@ -37,16 +28,28 @@ public abstract class AbstractTaskCommand extends GenerationBaseCommand {
     private Map<String, io.fabric8.tekton.v1.Task> projectV1Tasks = new HashMap<>();
     private Map<String, io.fabric8.tekton.v1beta1.Task> projectV1beta1Tasks = new HashMap<>();
 
+    void checkNamespace() {
+        // If the argument of the CLI command --namespace has been provided, we use it, otherwise we check
+        // if the namespace has been set using the kubernetes context and config
+        if (namespace.isPresent()) {
+            Clients.setNamespace(namespace.get());
+        } else {
+            Clients.setNamespace(namespace
+                    .or(() -> Optional.ofNullable(Clients.kubernetes().getNamespace()))
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "No user's namespace provided using the kubecontext or CLI command's argument: --namespace")));
+        }
+    }
+
     void readInstalledTasks() {
         try {
             Clients.use(kubernetesClient);
-            //Clients.use(tektonClient);
 
-            Clients.tekton().v1().tasks().list().getItems().forEach(t -> {
+            Clients.tekton().v1().tasks().inNamespace(Clients.getNamespace()).list().getItems().forEach(t -> {
                 installedV1Tasks.put(t.getMetadata().getName(), t);
             });
 
-            Clients.tekton().v1beta1().tasks().list().getItems().forEach(t -> {
+            Clients.tekton().v1beta1().tasks().inNamespace(Clients.getNamespace()).list().getItems().forEach(t -> {
                 installedV1beta1Tasks.put(t.getMetadata().getName(), t);
             });
         } catch (Exception e) {
