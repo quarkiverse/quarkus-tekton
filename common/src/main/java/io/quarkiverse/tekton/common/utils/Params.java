@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.fabric8.tekton.v1.Param;
 import io.fabric8.tekton.v1.ParamBuilder;
@@ -25,43 +24,75 @@ public final class Params {
             return false;
     }
 
-    public static List<Param> createSingle(String name, String type, List<String> list) {
+    public static <T> List<Param> create(T input) {
         List<Param> result = new ArrayList<>();
-        result.add(new ParamBuilder()
-                .withName(name)
-                .withNewValue()
-                .withType(type)
-                .withStringVal("string".equals(type) ? list.stream().collect(Collectors.joining(" ")) : null)
-                .withArrayVal("array".equals(type) ? list : new ArrayList<>())
-                .endValue()
-                .build());
-        return result;
-    }
+        /**
+         * We got a quarkus tekton params property where params are defined as:
+         *
+         * -Dquarkus.tekton.pipelinerun.params.url=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job
+         * -Dquarkus.tekton.pipelinerun.params.sslVerify=false
+         * -Dquarkus.tekton.pipelinerun.params.output-image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job
+         * -Dquarkus.tekton.pipelinerun.params.mavenGoals="-Dquarkus.container-image.build=false
+         * -Dquarkus.container-image.push=false package"
+         */
+        if (input instanceof Map<?, ?> map) {
+            map.forEach((k, v) -> {
+                result.add(create(String.valueOf(k), v));
+            });
 
-    public static List<Param> create(List<String> list) {
-        List<Param> result = new ArrayList<>();
-        Iterator<String> iterator = list.iterator();
-        String key = null;
-        String value = null;
-        while (iterator.hasNext()) {
-            String s = iterator.next();
-            if (key != null) {
-                value = s;
-                result.add(create(key, value));
-                key = null;
-            } else if (isValidKeyValue(s)) {
-                result.add(create(s));
-            } else {
-                key = s;
+            /**
+             * We got a List<String> from the Quarkus tekton CLI
+             *
+             * quarkus pipeline exec build-test-push \
+             * sslVerify=false \
+             * output-image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job \
+             * url=https://gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job.git \
+             * mavenGoals="-Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
+             * -Dquarkus.container-image.image=gitea.cnoe.localtest.me:8443/quarkus/my-quarkus-app-job package"
+             *
+             * It is then needed to convert the List<String> of arguments into a Map<String,String> where the key is equal to
+             * the left part of key=val
+             */
+        } else if (input instanceof List<?>) {
+            Iterator<String> iterator = ((List<String>) input).iterator();
+            String key = null;
+            String value = null;
+            while (iterator.hasNext()) {
+                String s = iterator.next();
+                if (key != null) {
+                    value = s;
+                    result.add(create(key, value));
+                    key = null;
+                } else if (isValidKeyValue(s)) {
+                    result.add(create(s));
+                } else {
+                    key = s;
+                }
             }
+        } else {
+            throw new IllegalArgumentException("Unsupported input type");
         }
+
         return result;
     }
 
     public static Param create(String name, Object value) {
-        String stringVal = value instanceof String ? (String) value : null;
+        String stringVal = null;
         String[] arrayVal = value instanceof String[] ? (String[]) value : null;
         Map<String, String> objectVal = value instanceof Map ? (Map) value : null;
+
+        // TODO: There could be edge cases where a param contains string enclosed in single or double quotes where space could be allowed inside them. Such
+        // cases are not yet supported !
+        if (value instanceof String) {
+            // Try to split the content of the string to see if the content could be split into an array
+            // using as separator a space
+            String val = (String) value;
+            if (val.split(" ").length > 1) {
+                arrayVal = val.split(" ");
+            } else {
+                stringVal = val;
+            }
+        }
 
         return new ParamBuilder()
                 .withName(name)

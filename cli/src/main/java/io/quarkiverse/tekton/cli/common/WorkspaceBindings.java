@@ -7,13 +7,11 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ConfigMapVolumeSourceBuilder;
-import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
-import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
-import io.fabric8.kubernetes.api.model.Secret;
-import io.fabric8.kubernetes.api.model.SecretVolumeSourceBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.tekton.v1.WorkspaceBinding;
 import io.fabric8.tekton.v1.WorkspaceBindingBuilder;
 
@@ -28,6 +26,8 @@ public class WorkspaceBindings {
         String apply(String name);
     }
 
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceBindings.class);
+
     private static final Map<String, PersistentVolumeClaim> PVC_CLAIMS = new HashMap<>();
     private static final Map<String, ConfigMap> CONFIG_MAPS = new HashMap<>();
     private static final Map<String, Secret> SECRETS = new HashMap<>();
@@ -39,21 +39,25 @@ public class WorkspaceBindings {
     }
 
     public static void readClusterPvcs() {
-        PVC_CLAIMS.putAll(Clients.kubernetes().persistentVolumeClaims().list()
+        PVC_CLAIMS.putAll(Clients.kubernetes().persistentVolumeClaims().inNamespace(Clients.getNamespace()).list()
                 .getItems().stream()
                 .collect(Collectors.toMap(p -> p.getMetadata().getName(), Function.identity())));
     }
 
     public static void readClusterConfigMaps() {
-        CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().list()
+        CONFIG_MAPS.putAll(Clients.kubernetes().configMaps().inNamespace(Clients.getNamespace()).list()
                 .getItems().stream()
-                .collect(Collectors.toMap(c -> c.getMetadata().getName(), Function.identity())));
+                .collect(Collectors.toMap(
+                        c -> c.getMetadata().getName(),
+                        Function.identity())));
     }
 
     public static void readClusterSecrets() {
-        SECRETS.putAll(Clients.kubernetes().secrets().list()
+        SECRETS.putAll(Clients.kubernetes().secrets().inNamespace(Clients.getNamespace()).list()
                 .getItems().stream()
-                .collect(Collectors.toMap(s -> s.getMetadata().getName(), Function.identity())));
+                .collect(Collectors.toMap(
+                        c -> c.getMetadata().getName(),
+                        Function.identity())));
     }
 
     public static void readBindingResources(List<HasMetadata> resources) {
@@ -119,7 +123,13 @@ public class WorkspaceBindings {
     public static Optional<WorkspaceBinding> forPvc(String applicationName, String workspaceName, boolean reReadClusterPvcs,
             Mapper... mappers) {
         if (reReadClusterPvcs) {
-            readClusterPvcs();
+            try {
+                readClusterPvcs();
+            } catch (KubernetesClientException e) {
+                log.warn(
+                        "Access to the kubernetes cluster to get the Pvc for the workspaceName: {} failed. Is the cluster available ?",
+                        workspaceName);
+            }
         }
         String name = applicationName + "-" + workspaceName;
         if (PVC_CLAIMS.containsKey(name)) {
@@ -147,7 +157,13 @@ public class WorkspaceBindings {
     public static Optional<WorkspaceBinding> forConfigMap(String applicationName, String workspaceName,
             boolean reReadClusterConfigMaps, Mapper... mappers) {
         if (reReadClusterConfigMaps) {
-            readClusterConfigMaps();
+            try {
+                readClusterConfigMaps();
+            } catch (KubernetesClientException e) {
+                log.warn(
+                        "Access to the kubernetes cluster to get the configMap for the workspaceName: {} failed. Is the cluster available ?",
+                        workspaceName);
+            }
         }
         String name = applicationName + "-" + workspaceName;
         if (CONFIG_MAPS.containsKey(name)) {
@@ -174,7 +190,13 @@ public class WorkspaceBindings {
     public static Optional<WorkspaceBinding> forSecret(String applicationName, String workspaceName,
             boolean reReadClusterSecrets, Mapper... mappers) {
         if (reReadClusterSecrets) {
-            readClusterSecrets();
+            try {
+                readClusterSecrets();
+            } catch (KubernetesClientException e) {
+                log.warn(
+                        "Access to the kubernetes cluster to get the Secret for the workspaceName: {} failed. Is the cluster available ?",
+                        workspaceName);
+            }
         }
         String name = applicationName + "-" + workspaceName;
         if (SECRETS.containsKey(name)) {
@@ -203,8 +225,8 @@ public class WorkspaceBindings {
                 .map(k -> PVC_CLAIMS.get(k));
 
         pvc.ifPresent(r -> {
-            if (Clients.kubernetes().resource(r).get() == null) {
-                Clients.kubernetes().resource(r).create();
+            if (Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).get() == null) {
+                Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).create();
             }
         });
 
@@ -214,8 +236,8 @@ public class WorkspaceBindings {
                 .map(k -> CONFIG_MAPS.get(k));
 
         configMap.ifPresent(r -> {
-            if (Clients.kubernetes().resource(r).get() == null) {
-                Clients.kubernetes().resource(r).create();
+            if (Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).get() == null) {
+                Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).create();
             }
         });
 
@@ -224,8 +246,8 @@ public class WorkspaceBindings {
                 .map(k -> SECRETS.get(k));
 
         configMap.ifPresent(r -> {
-            if (Clients.kubernetes().resource(r).get() == null) {
-                Clients.kubernetes().resource(r).create();
+            if (Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).get() == null) {
+                Clients.kubernetes().resource(r).inNamespace(Clients.getNamespace()).create();
             }
         });
 

@@ -40,18 +40,24 @@ public class Serialization {
     private static final String BLANK = "";
 
     private static JsonFactory JSON_FACTORY = new JsonFactory();
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper(JSON_FACTORY)
-            .setSerializationInclusion(Include.NON_EMPTY);
+
+    private static final ObjectMapper JSON_MAPPER;
 
     private static YAMLFactory YAML_FACTORY = new YAMLFactory()
             .enable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
             .disable(YAMLGenerator.Feature.SPLIT_LINES)
-            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
+            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+            .enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS);
 
-    private static final ObjectMapper YAML_MAPPER = new YAMLMapper(YAML_FACTORY)
-            .setSerializationInclusion(Include.NON_EMPTY);
+    private static final ObjectMapper YAML_MAPPER;
 
     static {
+        YAML_MAPPER = new YAMLMapper(YAML_FACTORY)
+                .setSerializationInclusion(Include.NON_EMPTY);
+
+        JSON_MAPPER = new ObjectMapper(JSON_FACTORY)
+                .setSerializationInclusion(Include.NON_EMPTY);
+
         JSON_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
@@ -91,7 +97,28 @@ public class Serialization {
                         .map(s -> s.replaceAll(TAG_PATTERN, BLANK))
                         .collect(Collectors.joining()).replaceFirst(DOCUMENT_DELIMITER, BLANK);
             }
-            return YAML_MAPPER.writeValueAsString(object).replaceAll(TAG_PATTERN, BLANK).replaceAll(DOCUMENT_DELIMITER, BLANK);
+
+            /**
+             * The array list of the kubernetes resources should be formated as such
+             *
+             * ---
+             * manifest1
+             * ---
+             * manifest2
+             * ...
+             *
+             * instead of a list as we got as error when deployed: cannot unmarshal array into Go value of type
+             * unstructured.detector
+             *
+             * - manifest1
+             * - manifest2
+             * ...
+             *
+             */
+            return ((List<HasMetadata>) object).stream()
+                    .map(Serialization::writeValueAsYamlSafe)
+                    .map(s -> s.replaceAll(TAG_PATTERN, BLANK))
+                    .collect(Collectors.joining());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

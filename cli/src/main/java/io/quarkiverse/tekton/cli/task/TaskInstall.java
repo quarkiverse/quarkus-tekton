@@ -9,13 +9,13 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "install", header = "Install tekton tasks.")
+@Command(name = "install", header = "Install Tekton tasks.")
 public class TaskInstall extends AbstractTaskCommand {
 
     @Parameters(index = "0", arity = "0..1", paramLabel = "TASK", description = "Task name.")
     Optional<String> taskName;
 
-    @Option(names = { "--all" }, description = "Insall all plugins in the catalog.")
+    @Option(names = { "--all" }, description = "Uninstall all the tasks.")
     boolean all;
 
     @Option(names = { "-r", "--regenerate" }, description = "Regenerate and reinstall the task.")
@@ -32,6 +32,7 @@ public class TaskInstall extends AbstractTaskCommand {
             throw new IllegalArgumentException("A task name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
 
@@ -43,11 +44,11 @@ public class TaskInstall extends AbstractTaskCommand {
             HasMetadata resource = getProjectTask(name)
                     .orElseThrow(() -> new IllegalArgumentException("Task " + name + " not found."));
             if (resource instanceof io.fabric8.tekton.v1.Task v1Task) {
-                Clients.kubernetes().resource(v1Task).serverSideApply();
+                Clients.kubernetes().resource(v1Task).inNamespace(Clients.getNamespace()).serverSideApply();
                 addInstalledTask(v1Task);
 
             } else if (resource instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
-                Clients.kubernetes().resource(v1beta1Task).serverSideApply();
+                Clients.kubernetes().resource(v1beta1Task).inNamespace(Clients.getNamespace()).serverSideApply();
                 addInstalledTask(v1beta1Task);
             }
         }
