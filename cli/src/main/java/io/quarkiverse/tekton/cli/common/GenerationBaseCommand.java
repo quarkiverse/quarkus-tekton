@@ -125,20 +125,19 @@ public abstract class GenerationBaseCommand implements Callable<Integer> {
 
     public Integer call() {
         if (!shouldOverwrite() && Files.exists(getTektonOutputDir())) {
-            System.out.println("Tekton resources already exist in " + getTektonOutputDir());
             GenerationBaseCommand.this.process(readExistingTektonResources());
             return ExitCode.OK;
         }
 
         Path projectRoot = getWorkingDirectory();
         BuildTool buildTool = QuarkusProjectHelper.detectExistingBuildTool(projectRoot);
-        Path targetDirecotry = projectRoot.resolve(buildTool.getBuildDirectory());
+        Path targetDirectory = projectRoot.resolve(buildTool.getBuildDirectory());
         QuarkusBootstrap quarkusBootstrap = QuarkusBootstrap.builder()
                 .setMode(QuarkusBootstrap.Mode.PROD)
                 .setBuildSystemProperties(getBuildSystemProperties())
                 .setApplicationRoot(getWorkingDirectory())
                 .setProjectRoot(getWorkingDirectory())
-                .setTargetDirectory(targetDirecotry)
+                .setTargetDirectory(targetDirectory)
                 .setIsolateDeployment(false)
                 .setRebuild(true)
                 .setTest(false)

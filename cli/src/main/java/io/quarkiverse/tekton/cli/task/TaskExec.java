@@ -37,11 +37,15 @@ public class TaskExec extends AbstractTaskCommand {
 
     @Override
     public void process(List<HasMetadata> resources) {
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
+
         WorkspaceBindings.readBindingResources(resources);
+
         Path projectRootDirPath = Projects.getProjectRoot();
         String projectName = Projects.getArtifactId(projectRootDirPath);
+
         if (regenerate) {
             getProjectTask(taskName).ifPresentOrElse(t -> {
                 Clients.kubernetes().resource(t).serverSideApply();
@@ -95,10 +99,8 @@ public class TaskExec extends AbstractTaskCommand {
                 v1Task.getSpec().getParams().forEach(p -> parameters.put(p.getName(), p.getType()));
             }
 
-            List<Param> params = parameters.size() == 1
-                    ? Params.createSingle(parameters.keySet().iterator().next(), parameters.values().iterator().next(),
-                            taskArgs)
-                    : Params.create(taskArgs);
+            // Convert the arguments passed by the Cli command as List<String> into a Map<String,String> where the key is equal is the left part of key=val
+            List<Param> params = Params.create(taskArgs);
 
             for (WorkspaceBinding binding : workspaceBindings) {
                 WorkspaceBindings.createIfNeeded(binding);

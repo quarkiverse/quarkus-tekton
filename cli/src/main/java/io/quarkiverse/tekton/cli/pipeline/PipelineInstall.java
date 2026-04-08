@@ -32,6 +32,7 @@ public class PipelineInstall extends AbstractPipelineCommand {
             throw new IllegalArgumentException("A pipeline name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledPipelines();
         readProjectPipelines(resources);
 
@@ -43,11 +44,11 @@ public class PipelineInstall extends AbstractPipelineCommand {
             HasMetadata resource = getProjectPipeline(name)
                     .orElseThrow(() -> new IllegalArgumentException("Pipeline " + name + " not found."));
             if (resource instanceof io.fabric8.tekton.v1.Pipeline v1Pipeline) {
-                Clients.kubernetes().resource(v1Pipeline).serverSideApply();
+                Clients.kubernetes().resource(v1Pipeline).inNamespace(Clients.getNamespace()).serverSideApply();
                 addInstalledPipeline(v1Pipeline);
 
             } else if (resource instanceof io.fabric8.tekton.v1beta1.Pipeline v1beta1Pipeline) {
-                Clients.kubernetes().resource(v1beta1Pipeline).serverSideApply();
+                Clients.kubernetes().resource(v1beta1Pipeline).inNamespace(Clients.getNamespace()).serverSideApply();
                 addInstalledPipeline(v1beta1Pipeline);
             }
         }

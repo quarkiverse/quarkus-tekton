@@ -15,6 +15,7 @@ public class PipelineList extends AbstractPipelineCommand {
 
     @Override
     public void process(List<HasMetadata> resources) {
+        checkNamespace();
         readInstalledPipelines();
         readProjectPipelines(resources);
 

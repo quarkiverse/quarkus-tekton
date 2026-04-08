@@ -9,10 +9,19 @@ public class Clients {
 
     private static KubernetesClient DEFAULT_KUBERNETES;
     private static TektonClient DEFAULT_TEKTON;
+    private static String USER_NAMESPACE;
     private static KubernetesClient kubernetesClient;
 
     public static void use(KubernetesClient kubeclient) {
         kubernetesClient = kubeclient;
+    }
+
+    public static void setNamespace(String namespace) {
+        USER_NAMESPACE = namespace;
+    }
+
+    public static String getNamespace() {
+        return USER_NAMESPACE;
     }
 
     public static KubernetesClient kubernetes() {

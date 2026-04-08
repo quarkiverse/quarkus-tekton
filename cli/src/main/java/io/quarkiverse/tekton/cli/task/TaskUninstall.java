@@ -31,6 +31,7 @@ public class TaskUninstall extends AbstractTaskCommand {
             throw new IllegalArgumentException("A task name or --all flag must be specified.");
         }
 
+        checkNamespace();
         readInstalledTasks();
         readProjectTasks(resources);
         List<String> uninstalled = new ArrayList<>();
@@ -42,7 +43,7 @@ public class TaskUninstall extends AbstractTaskCommand {
 
             getProjectTask(name).ifPresentOrElse(resource -> {
                 if (resource instanceof io.fabric8.tekton.v1.Task v1Task) {
-                    Clients.kubernetes().resource(v1Task).delete();
+                    Clients.kubernetes().resource(v1Task).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledTask(v1Task) != null) {
                         uninstalled.add(name);
                     } else {
@@ -50,7 +51,7 @@ public class TaskUninstall extends AbstractTaskCommand {
                     }
 
                 } else if (resource instanceof io.fabric8.tekton.v1beta1.Task v1beta1Task) {
-                    Clients.kubernetes().resource(v1beta1Task).delete();
+                    Clients.kubernetes().resource(v1beta1Task).inNamespace(Clients.getNamespace()).delete();
                     if (removeInstalledTask(v1beta1Task) != null) {
                         uninstalled.add(name);
                     } else {

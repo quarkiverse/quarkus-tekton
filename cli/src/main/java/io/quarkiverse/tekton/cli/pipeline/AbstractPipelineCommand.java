@@ -28,15 +28,24 @@ public abstract class AbstractPipelineCommand extends GenerationBaseCommand {
     @Inject
     KubernetesClient kubernetesClient;
 
+    void checkNamespace() {
+        // If the argument of the CLI command --namespace has been provided, we use it, otherwise we check
+        // if the namespace has been set using the kubernetes context and config
+        Clients.setNamespace(namespace
+                .or(() -> Optional.ofNullable(Clients.kubernetes().getNamespace()))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No user's namespace provided using the kubecontext or CLI command's argument: --namespace")));
+    }
+
     void readInstalledPipelines() {
         try {
             Clients.use(kubernetesClient);
 
-            Clients.tekton().v1().pipelines().list().getItems().forEach(t -> {
+            Clients.tekton().v1().pipelines().inNamespace(Clients.getNamespace()).list().getItems().forEach(t -> {
                 installedV1Pipelines.put(t.getMetadata().getName(), t);
             });
 
-            Clients.tekton().v1beta1().pipelines().list().getItems().forEach(t -> {
+            Clients.tekton().v1beta1().pipelines().inNamespace(Clients.getNamespace()).list().getItems().forEach(t -> {
                 installedV1beta1Pipelines.put(t.getMetadata().getName(), t);
             });
         } catch (Exception e) {

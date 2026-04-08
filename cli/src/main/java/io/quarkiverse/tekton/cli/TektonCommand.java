@@ -29,7 +29,7 @@ public class TektonCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        CommandLine entitiesCommand = spec.subcommands().get("entities");
+        CommandLine entitiesCommand = spec.subcommands().get("generate");
         return entitiesCommand.execute();
     }
 
