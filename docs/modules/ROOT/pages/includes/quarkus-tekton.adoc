@@ -7,7 +7,7 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-enabled[`quarkus.tekton.pipelinerun.enabled`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-enabled[`+++quarkus.tekton.pipelinerun.enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.pipelinerun.enabled+++[]
 endif::add-copy-button-to-config-props[]
@@ -28,7 +28,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++true+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-params-params]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-params-params[`quarkus.tekton.pipelinerun.params."params"`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-params-params]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-params-params[`+++quarkus.tekton.pipelinerun.params."params"+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.pipelinerun.params."params"+++[]
 endif::add-copy-button-to-config-props[]
@@ -49,7 +49,7 @@ endif::add-copy-button-to-env-var[]
 |Map<String,String>
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-generation-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-generation-enabled[`quarkus.tekton.generation.enabled`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-generation-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-generation-enabled[`+++quarkus.tekton.generation.enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.generation.enabled+++[]
 endif::add-copy-button-to-config-props[]
@@ -70,7 +70,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++true+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-enabled[`quarkus.tekton.devservices.enabled`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-enabled[`+++quarkus.tekton.devservices.enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.enabled+++[]
 endif::add-copy-button-to-config-props[]
@@ -91,7 +91,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++true+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-debug-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-debug-enabled[`quarkus.tekton.devservices.debug-enabled`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-debug-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-debug-enabled[`+++quarkus.tekton.devservices.debug-enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.debug-enabled+++[]
 endif::add-copy-button-to-config-props[]
@@ -112,7 +112,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++false+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-show-logs]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-show-logs[`quarkus.tekton.devservices.show-logs`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-show-logs]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-show-logs[`+++quarkus.tekton.devservices.show-logs+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.show-logs+++[]
 endif::add-copy-button-to-config-props[]
@@ -133,7 +133,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++false+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-version]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-version[`quarkus.tekton.devservices.version`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-version]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-version[`+++quarkus.tekton.devservices.version+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.version+++[]
 endif::add-copy-button-to-config-props[]
@@ -154,7 +154,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++v0.68.0+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-controller-namespace]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-controller-namespace[`quarkus.tekton.devservices.controller-namespace`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-controller-namespace]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-controller-namespace[`+++quarkus.tekton.devservices.controller-namespace+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.controller-namespace+++[]
 endif::add-copy-button-to-config-props[]
@@ -175,7 +175,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++tekton-pipelines+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-time-out]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-time-out[`quarkus.tekton.devservices.time-out`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-time-out]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-time-out[`+++quarkus.tekton.devservices.time-out+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.time-out+++[]
 endif::add-copy-button-to-config-props[]
@@ -196,7 +196,7 @@ endif::add-copy-button-to-env-var[]
 |long
 |`+++360+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-cluster-type]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-cluster-type[`quarkus.tekton.devservices.cluster-type`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-cluster-type]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-cluster-type[`+++quarkus.tekton.devservices.cluster-type+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.cluster-type+++[]
 endif::add-copy-button-to-config-props[]
@@ -217,7 +217,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++kind+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-host-name]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-host-name[`quarkus.tekton.devservices.host-name`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-host-name]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-host-name[`+++quarkus.tekton.devservices.host-name+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.host-name+++[]
 endif::add-copy-button-to-config-props[]
@@ -238,7 +238,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++tekton.localtest.me+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-host-port]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-host-port[`quarkus.tekton.devservices.host-port`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-host-port]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-host-port[`+++quarkus.tekton.devservices.host-port+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.host-port+++[]
 endif::add-copy-button-to-config-props[]
@@ -259,7 +259,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++9097+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-ingress-version]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-ingress-version[`quarkus.tekton.devservices.ingress.version`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-ingress-version]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-ingress-version[`+++quarkus.tekton.devservices.ingress.version+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.ingress.version+++[]
 endif::add-copy-button-to-config-props[]
@@ -280,7 +280,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++latest+++`
 
-a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-ingress-port-forward-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-ingress-port-forward-enabled[`quarkus.tekton.devservices.ingress.port-forward-enabled`]##
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-devservices-ingress-port-forward-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-devservices-ingress-port-forward-enabled[`+++quarkus.tekton.devservices.ingress.port-forward-enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.devservices.ingress.port-forward-enabled+++[]
 endif::add-copy-button-to-config-props[]
