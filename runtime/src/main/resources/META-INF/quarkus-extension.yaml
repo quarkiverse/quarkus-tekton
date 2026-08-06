@@ -1,9 +1,12 @@
 name: Tekton
-#description: Do something useful.
+description: Quarkus extension generating Tekton CI/CD pipeline to clone/build a Java application using Buildpack
 metadata:
-#  keywords:
-#    - tekton
-#  guide: https://docs.quarkiverse.io/tekton/dev/ # To create and publish this guide, see https://github.com/quarkiverse/quarkiverse/wiki#documenting-your-extension
-#  categories:
-#    - "miscellaneous"
-#  status: "preview"
+  keywords:
+    - tekton
+    - ci/cd
+    - kubernetes
+    - openshift
+  guide: https://docs.quarkiverse.io/quarkus-tekton/index.html
+  categories:
+    - "cloud"
+  status: "preview"
