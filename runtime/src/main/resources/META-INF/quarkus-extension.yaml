@@ -6,7 +6,7 @@ metadata:
     - ci/cd
     - kubernetes
     - openshift
-  guide: https://docs.quarkiverse.io/quarkus-tekton/index.html
+  guide: https://docs.quarkiverse.io/quarkus-tekton/dev/index.html
   categories:
     - "cloud"
   status: "preview"
