@@ -59,5 +59,6 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean install -Dno-format
 
-      - name: Build with Maven (Native)
-        run: mvn -B install -Dnative -Dquarkus.native.container-build -Dnative.surefire.skip
+      # Disabling this step as this is not clear why we need a native as no image is produced
+      # - name: Build with Maven (Native)
+      #  run: mvn -B install -Dnative -Dquarkus.native.container-build -Dnative.surefire.skip
