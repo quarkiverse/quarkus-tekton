@@ -82,13 +82,10 @@ spec:
           value: $(params.dockerfile)
         - name: TLSVERIFY
           value: $(params.sslVerify)
-        # THIS IS MANDATORY TO PASS THE CREDS FILE TO THE TASK FROM THE WKS
-        - name: REGISTRY_AUTH_PATH
-          value: $(workspaces.dockerconfig-secret.path)
-
       workspaces:
         - name: project-dir
           workspace: project-dir
-        - name: dockerconfig-secret
+        # The task uses the config.json file of this workspace as DOCKER_CONFIG to access the registry
+        - name: dockerconfig
           workspace: dockerconfig-secret
 

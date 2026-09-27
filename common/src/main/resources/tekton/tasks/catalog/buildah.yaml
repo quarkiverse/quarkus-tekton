@@ -123,6 +123,8 @@ spec:
     volumeMounts:
     - name: varlibcontainers
       mountPath: /var/lib/containers
+    securityContext:
+      privileged: true
   volumes:
   - name: varlibcontainers
     emptyDir: {}
