@@ -7,7 +7,6 @@ import io.quarkiverse.tekton.common.utils.Serialization;
 public class BuildahTask {
 
     public static Task create() {
-        Task task = Serialization.unmarshal(Resources.read("/tekton/tasks/buildah.yaml"));
-        return task;
+        return Serialization.unmarshal(Resources.read("/tekton/tasks/catalog/buildah.yaml"));
     }
 }
