@@ -131,6 +131,10 @@ public abstract class GenerationBaseCommand implements Callable<Integer> {
 
         Path projectRoot = getWorkingDirectory();
         BuildTool buildTool = QuarkusProjectHelper.detectExistingBuildTool(projectRoot);
+        if (buildTool == null) {
+            throw new IllegalStateException("No Maven or Gradle project found in " + projectRoot
+                    + ". Please run the command from the root of a Quarkus project.");
+        }
         Path targetDirectory = projectRoot.resolve(buildTool.getBuildDirectory());
         QuarkusBootstrap quarkusBootstrap = QuarkusBootstrap.builder()
                 .setMode(QuarkusBootstrap.Mode.PROD)
