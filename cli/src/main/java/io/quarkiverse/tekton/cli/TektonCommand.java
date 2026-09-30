@@ -29,8 +29,12 @@ public class TektonCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        CommandLine entitiesCommand = spec.subcommands().get("generate");
-        return entitiesCommand.execute();
+        CommandLine generateCommand = spec.subcommands().get("generate");
+        if (generateCommand == null) {
+            spec.commandLine().usage(output.out());
+            return CommandLine.ExitCode.USAGE;
+        }
+        return generateCommand.execute();
     }
 
     public OutputOptionMixin getOutput() {
