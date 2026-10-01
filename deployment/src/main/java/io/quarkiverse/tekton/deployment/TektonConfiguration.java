@@ -28,6 +28,13 @@ public interface TektonConfiguration {
          * User's arguments to customize the pipeline
          */
         Map<String, String> params();
+
+        /**
+         * Name of the Secret, expected to exist on the cluster, containing the registry auth file (config.json)
+         * which is bound to the `dockerconfig-secret` workspace of the PipelineRun.
+         */
+        @WithDefault("dockerconfig-secret")
+        String registryAuthSecret();
     }
 
     /**
