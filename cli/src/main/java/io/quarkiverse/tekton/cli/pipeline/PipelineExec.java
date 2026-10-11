@@ -86,12 +86,19 @@ public class PipelineExec extends AbstractPipelineCommand {
             List<Param> params = Params.create(pipelineArgs);
             pipelineRun.getSpec().setParams(params);
 
+            // Keep the workspace bindings of the generated PipelineRun (e.g. ssl-ca-directory bound to the CA ConfigMap)
+            // as fallback when no matching PVC, Secret or ConfigMap is found
+            Map<String, WorkspaceBinding> generatedBindings = new HashMap<>();
+            Optional.ofNullable(pipelineRun.getSpec().getWorkspaces())
+                    .ifPresent(l -> l.forEach(b -> generatedBindings.put(b.getName(), b)));
+
             // Bind any existing PVC, Secret or configMap to their respective workspace declared part of the Pipeline
             if (t instanceof io.fabric8.tekton.v1.Pipeline pipelineV1) {
                 pipelineV1.getSpec().getWorkspaces().forEach(w -> {
                     String workspaceName = w.getName();
 
                     WorkspaceBindings.forName(projectName, workspaceName)
+                            .or(() -> Optional.ofNullable(generatedBindings.get(workspaceName)))
                             .or(() -> !Boolean.TRUE.equals(w.getOptional())
                                     ? WorkspaceBindings.forEmpty(projectName, workspaceName)
                                     : Optional.empty())
@@ -102,6 +109,7 @@ public class PipelineExec extends AbstractPipelineCommand {
                     String workspaceName = w.getName();
 
                     WorkspaceBindings.forName(projectName, workspaceName)
+                            .or(() -> Optional.ofNullable(generatedBindings.get(workspaceName)))
                             .or(() -> !Boolean.TRUE.equals(w.getOptional())
                                     ? WorkspaceBindings.forEmpty(projectName, workspaceName)
                                     : Optional.empty())

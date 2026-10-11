@@ -67,7 +67,7 @@ public class TektonProcessor {
         // PipelineRun
         if (config.pipelinerun().enabled()) {
             resources.add(BuildTestPushPipelineRun.create(name, aPipeline, Optional.of(config.pipelinerun().params()),
-                    config.pipelinerun().registryAuthSecret()));
+                    config.pipelinerun().registryAuthSecret(), config.pipelinerun().sslCaConfigMap()));
         }
 
         generatedTektonResources.produce(new GeneratedTektonResourceBuildItem(resources));

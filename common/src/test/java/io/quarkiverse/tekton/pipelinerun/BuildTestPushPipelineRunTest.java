@@ -29,7 +29,9 @@ class BuildTestPushPipelineRunTest {
 
         Map<String, WorkspaceBinding> bindings = pipelineRun.getSpec().getWorkspaces().stream()
                 .collect(Collectors.toMap(WorkspaceBinding::getName, w -> w));
-        assertEquals(pipeline.getSpec().getWorkspaces().size(), bindings.size());
+        // The optional ssl-ca-directory workspace is not bound when no CA ConfigMap is provided
+        assertEquals(pipeline.getSpec().getWorkspaces().size() - 1, bindings.size());
+        assertFalse(bindings.containsKey("ssl-ca-directory"));
         assertEquals("my-app-project-pvc", bindings.get("project-dir").getPersistentVolumeClaim().getClaimName());
         assertEquals("my-app-maven-repo-pvc", bindings.get("maven-repo-dir").getPersistentVolumeClaim().getClaimName());
         assertEquals("my-app-maven-settings", bindings.get("maven-settings").getConfigMap().getName());
@@ -42,10 +44,23 @@ class BuildTestPushPipelineRunTest {
         BuildTestPushPipelineRun.create("my-app", pipeline, Optional.empty());
         PipelineRun pipelineRun = BuildTestPushPipelineRun.create("my-app", pipeline, Optional.empty());
 
-        assertEquals(pipeline.getSpec().getWorkspaces().size(), pipelineRun.getSpec().getWorkspaces().size());
+        assertEquals(pipeline.getSpec().getWorkspaces().size() - 1, pipelineRun.getSpec().getWorkspaces().size());
         assertEquals("dockerconfig-secret",
                 pipelineRun.getSpec().getWorkspaces().stream().filter(w -> w.getName().equals("dockerconfig-secret"))
                         .findFirst().orElseThrow().getSecret().getSecretName());
+    }
+
+    @Test
+    void testSslCaDirectoryWorkspaceIsBoundToConfigMap() {
+        Pipeline pipeline = BuildTestPushPipeline.create();
+        PipelineRun pipelineRun = BuildTestPushPipelineRun.create("my-app", pipeline, Optional.empty(),
+                "my-registry-secret", Optional.of("my-ca-bundle"));
+
+        WorkspaceBinding binding = pipelineRun.getSpec().getWorkspaces().stream()
+                .filter(w -> w.getName().equals("ssl-ca-directory"))
+                .findFirst().orElseThrow();
+        assertEquals("my-ca-bundle", binding.getConfigMap().getName());
+        assertEquals(pipeline.getSpec().getWorkspaces().size(), pipelineRun.getSpec().getWorkspaces().size());
     }
 
     @Test

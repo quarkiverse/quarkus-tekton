@@ -21,6 +21,7 @@ public class BuildTestPushPipelineRun {
     public static final String MAVEN_REPO_DIR_WORKSPACE = "maven-repo-dir";
     public static final String MAVEN_SETTINGS_WORKSPACE = "maven-settings";
     public static final String DOCKERCONFIG_SECRET_WORKSPACE = "dockerconfig-secret";
+    public static final String SSL_CA_DIRECTORY_WORKSPACE = "ssl-ca-directory";
     public static final String DEFAULT_REGISTRY_AUTH_SECRET = "dockerconfig-secret";
 
     public static PipelineRun create(String projectName, Pipeline pipeline, Optional<Map<String, String>> pipelineRunArgs) {
@@ -29,6 +30,11 @@ public class BuildTestPushPipelineRun {
 
     public static PipelineRun create(String projectName, Pipeline pipeline, Optional<Map<String, String>> pipelineRunArgs,
             String registryAuthSecret) {
+        return create(projectName, pipeline, pipelineRunArgs, registryAuthSecret, Optional.empty());
+    }
+
+    public static PipelineRun create(String projectName, Pipeline pipeline, Optional<Map<String, String>> pipelineRunArgs,
+            String registryAuthSecret, Optional<String> sslCaConfigMap) {
         if (pipelineRunArgs.isEmpty() || pipelineRunArgs.get().isEmpty()) {
             log.warn(
                     "The pipelinerun arguments cannot be empty. Set the property: quarkus.tekton.pipelinerun.params with the mandatory pipeline parameters");
@@ -40,10 +46,18 @@ public class BuildTestPushPipelineRun {
         }
 
         // Bind the pipeline workspaces to the resources generated for the project (PVCs, ConfigMap) and to the
-        // registry auth secret that we expect to exist on the cluster
+        // registry auth secret that we expect to exist on the cluster.
+        // The optional ssl-ca-directory workspace is only bound when a ConfigMap containing the CA certificate(s) is provided
         List<WorkspaceBinding> workspaceBindings = new ArrayList<>();
-        pipeline.getSpec().getWorkspaces().forEach(w -> workspaceBindings
-                .add(workspaceBindingFor(projectName, w.getName(), registryAuthSecret)));
+        pipeline.getSpec().getWorkspaces().forEach(w -> {
+            if (SSL_CA_DIRECTORY_WORKSPACE.equals(w.getName())) {
+                sslCaConfigMap.filter(n -> !n.isBlank())
+                        .ifPresent(cm -> workspaceBindings.add(new WorkspaceBindingBuilder().withName(w.getName())
+                                .withConfigMap(new ConfigMapVolumeSourceBuilder().withName(cm).build()).build()));
+            } else {
+                workspaceBindings.add(workspaceBindingFor(projectName, w.getName(), registryAuthSecret));
+            }
+        });
 
         // Convert the user's arguments to the pipelinerun params
         List<Param> params = new ArrayList<>();
