@@ -32,6 +32,7 @@ public class PipelineUninstall extends AbstractPipelineCommand {
         }
 
         checkNamespace();
+        Clients.checkTektonInstalled();
         readInstalledPipelines();
         readProjectPipelines(resources);
         List<String> uninstalled = new ArrayList<>();

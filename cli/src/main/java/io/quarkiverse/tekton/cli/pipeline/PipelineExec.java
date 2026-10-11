@@ -39,6 +39,7 @@ public class PipelineExec extends AbstractPipelineCommand {
     @Override
     public void process(List<HasMetadata> resources) {
         checkNamespace();
+        Clients.checkTektonInstalled();
         readInstalledPipelines();
         readProjectPipelines(resources);
         // Reading the generated resources and assign them to their respective Map<String, String>

@@ -32,6 +32,7 @@ public class TaskUninstall extends AbstractTaskCommand {
         }
 
         checkNamespace();
+        Clients.checkTektonInstalled();
         readInstalledTasks();
         readProjectTasks(resources);
         List<String> uninstalled = new ArrayList<>();
