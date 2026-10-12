@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 
 import io.quarkiverse.tekton.cli.common.OutputOptionMixin;
 import io.quarkiverse.tekton.cli.pipeline.PipelineExec;
+import io.quarkiverse.tekton.cli.pipeline.PipelineGenerate;
 import io.quarkiverse.tekton.cli.pipeline.PipelineInstall;
 import io.quarkiverse.tekton.cli.pipeline.PipelineList;
 import io.quarkiverse.tekton.cli.pipeline.PipelineUninstall;
@@ -17,6 +18,7 @@ import picocli.CommandLine.Spec;
 @SuppressWarnings("rawtypes")
 @Command(name = "pipeline", sortOptions = false, mixinStandardHelpOptions = false, header = "Pipeline CLI", subcommands = {
         PipelineExec.class,
+        PipelineGenerate.class,
         PipelineInstall.class,
         PipelineUninstall.class,
         PipelineList.class })
