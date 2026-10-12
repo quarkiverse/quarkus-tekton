@@ -33,6 +33,7 @@ public class TaskInstall extends AbstractTaskCommand {
         }
 
         checkNamespace();
+        Clients.checkTektonInstalled();
         readInstalledTasks();
         readProjectTasks(resources);
 

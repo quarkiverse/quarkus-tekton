@@ -33,6 +33,7 @@ public class PipelineInstall extends AbstractPipelineCommand {
         }
 
         checkNamespace();
+        Clients.checkTektonInstalled();
         readInstalledPipelines();
         readProjectPipelines(resources);
 

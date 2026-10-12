@@ -38,6 +38,7 @@ public class TaskExec extends AbstractTaskCommand {
     @Override
     public void process(List<HasMetadata> resources) {
         checkNamespace();
+        Clients.checkTektonInstalled();
         readInstalledTasks();
         readProjectTasks(resources);
 
