@@ -19,6 +19,67 @@ For instance, with Maven, add the following dependency to your POM file:
 </dependency>
 ----
 
+== CLI
+
+The extension provides a plugin for the https://quarkus.io/guides/cli-tooling[Quarkus CLI] to generate, install and execute the Tekton resources of your project.
+
+To register the plugin:
+
+[source,bash,subs=attributes+]
+----
+quarkus plug add io.quarkiverse.tekton:quarkus-tekton-cli:{project-version}
+----
+
+From the root of your Quarkus project, you can then:
+
+[source,bash]
+----
+# Generate the Tekton resources under .tekton/ (tekton.yml and tekton.json)
+quarkus tekton generate
+
+# List, install or uninstall the tasks of the project
+quarkus tekton task list
+quarkus tekton task install --all
+
+# List, install or uninstall the pipelines of the project
+quarkus tekton pipeline list
+quarkus tekton pipeline install build-test-push
+
+# Execute a pipeline
+quarkus tekton pipeline exec build-test-push url=https://github.com/org/my-app.git output-image=quay.io/org/my-app
+----
+
+=== Generate a pipeline of tasks
+
+You can create your own pipeline from the tasks of the project using the `pipeline generate` command.
+The tasks are executed sequentially, following the order in which they are passed:
+
+[source,bash]
+----
+quarkus tekton pipeline generate my-pipeline --task git-clone,maven,buildah
+----
+
+The generated pipeline:
+
+* references each task using `taskRef` and runs it after the previous one (`runAfter`),
+* exposes the params of the tasks as pipeline params (with their type, description and default value). When two tasks declare a param having the same name but a different type, the param of the latter is prefixed with the name of its task (`<task>-<param>`),
+* exposes the workspaces of the tasks as pipeline workspaces. A workspace is optional only if all the tasks using it declare it as optional.
+
+The pipeline is printed on the console and added to the `.tekton/tekton.yml` and `.tekton/tekton.json` files (replacing a pipeline having the same name), so it can be installed and executed:
+
+[source,bash]
+----
+quarkus tekton pipeline install my-pipeline
+----
+
+Options:
+
+* `-t, --task`: name of the task(s) to run, in order. Can be repeated or comma separated.
+* `-r, --regenerate`: regenerate the resources of the project before generating the pipeline.
+* `--tekton-output-dir`: the directory containing the Tekton resources (default: `.tekton`).
+
+NOTE: Running `quarkus tekton generate` (or using `--regenerate`) recreates the `.tekton` files. A pipeline generated previously must then be generated again.
+
 == Git server or registry using a self-signed certificate
 
 When the git repository is hosted on a server using a self-signed certificate, the `git-clone` task fails with `SSL certificate problem: self-signed certificate`.
