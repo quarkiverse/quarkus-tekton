@@ -33,11 +33,18 @@ spec:
       description: boolean allowing to verify the TLS certificate during task execution like git clone, image push to a registry, etc
       name: sslVerify
       type: string
+    - default: "ca-bundle.crt"
+      description: Name of the CA certificate file, part of the ssl-ca-directory workspace, used by git to verify the TLS certificate of the git server
+      name: crtFileName
+      type: string
   workspaces:
     - name: project-dir
     - name: maven-repo-dir
     - name: maven-settings
     - name: dockerconfig-secret
+    - name: ssl-ca-directory
+      description: Optional workspace containing the CA certificate(s) used to verify the TLS certificate of the git server and the image registry (e.g. self-signed certificate)
+      optional: true
   tasks:
     - name: git-clone
       taskRef:
@@ -47,9 +54,13 @@ spec:
           value: $(params.url)
         - name: sslVerify
           value: $(params.sslVerify)
+        - name: crtFileName
+          value: $(params.crtFileName)
       workspaces:
         - name: project-dir
           workspace: project-dir
+        - name: ssl-ca-directory
+          workspace: ssl-ca-directory
 
     - name: maven-package-test
       taskRef:
@@ -88,4 +99,7 @@ spec:
         # The task uses the config.json file of this workspace as DOCKER_CONFIG to access the registry
         - name: dockerconfig
           workspace: dockerconfig-secret
+        # The CA certificate(s) (*.crt) used to verify the TLS certificate of the registry
+        - name: sslcertdir
+          workspace: ssl-ca-directory
 

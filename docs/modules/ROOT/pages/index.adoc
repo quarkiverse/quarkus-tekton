@@ -19,6 +19,27 @@ For instance, with Maven, add the following dependency to your POM file:
 </dependency>
 ----
 
+== Git server or registry using a self-signed certificate
+
+When the git repository is hosted on a server using a self-signed certificate, the `git-clone` task fails with `SSL certificate problem: self-signed certificate`.
+To verify the certificate, create a ConfigMap containing the CA certificate on the cluster:
+
+[source,bash]
+----
+kubectl create configmap git-ca-bundle --from-file=ca-bundle.crt=/path/to/ca.crt
+----
+
+and declare it using the following property. The ConfigMap is then bound to the `ssl-ca-directory` workspace of the PipelineRun:
+
+[source,properties]
+----
+quarkus.tekton.pipelinerun.ssl-ca-config-map=git-ca-bundle
+# Optional: name of the certificate file within the ConfigMap (default: ca-bundle.crt)
+quarkus.tekton.pipelinerun.params.crtFileName=ca-bundle.crt
+----
+
+NOTE: Alternatively, the TLS verification can be disabled using the pipeline parameter `sslVerify=false`, which is not advised.
+
 [[extension-configuration-reference]]
 == Extension Configuration Reference
 

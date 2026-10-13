@@ -70,6 +70,27 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++dockerconfig-secret+++`
 
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-pipelinerun-ssl-ca-config-map]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-pipelinerun-ssl-ca-config-map[`+++quarkus.tekton.pipelinerun.ssl-ca-config-map+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.pipelinerun.ssl-ca-config-map+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Name of the ConfigMap, expected to exist on the cluster, containing the CA certificate(s) used to verify the TLS certificate of the git server and the image registry (e.g. a self-signed certificate). When set, the ConfigMap is bound to the `ssl-ca-directory` workspace of the PipelineRun. The name of the certificate file within the ConfigMap is defined using the pipeline parameter `crtFileName` (default: `ca-bundle.crt`).
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_PIPELINERUN_SSL_CA_CONFIG_MAP+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_PIPELINERUN_SSL_CA_CONFIG_MAP+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
 a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-generation-enabled]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-generation-enabled[`+++quarkus.tekton.generation.enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.tekton.generation.enabled+++[]
