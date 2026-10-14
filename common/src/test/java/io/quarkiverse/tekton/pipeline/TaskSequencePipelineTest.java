@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,14 @@ import io.fabric8.tekton.v1.PipelineTask;
 import io.fabric8.tekton.v1.PipelineWorkspaceDeclaration;
 import io.fabric8.tekton.v1.Task;
 import io.fabric8.tekton.v1.TaskBuilder;
+import io.quarkiverse.tekton.task.CustomTask;
 import io.quarkiverse.tekton.task.GitCloneTask;
 import io.quarkiverse.tekton.task.LsTask;
 import io.quarkiverse.tekton.task.MavenTask;
+import io.quarkiverse.tekton.task.ParamDefinition;
+import io.quarkiverse.tekton.task.StepDefinition;
+import io.quarkiverse.tekton.task.TaskDefinition;
+import io.quarkiverse.tekton.task.WorkspaceDefinition;
 
 class TaskSequencePipelineTest {
 
@@ -70,6 +76,29 @@ class TaskSequencePipelineTest {
         assertEquals(List.of("args", "echo-args"), names);
         assertEquals(List.of("$(params.echo-args[*])"),
                 pipeline.getSpec().getTasks().get(1).getParams().get(0).getValue().getArrayVal());
+    }
+
+    @Test
+    void testCustomTask() {
+        Task hello = CustomTask.create(new TaskDefinition("hello", Optional.empty(),
+                List.of(new ParamDefinition("who", null, Optional.of("world"), Optional.empty())),
+                List.of(new WorkspaceDefinition("project-dir", Optional.empty(), true, Optional.empty())),
+                List.of(new StepDefinition(null, "registry.access.redhat.com/ubi9/ubi-minimal",
+                        Optional.of("echo Hello $(params.who)"), List.of(), List.of(), Optional.empty(), Map.of()))));
+        Pipeline pipeline = TaskSequencePipeline.create("my-pipeline", List.of(LsTask.create(), hello));
+
+        List<PipelineTask> tasks = pipeline.getSpec().getTasks();
+        assertEquals(List.of("ls", "hello"), tasks.stream().map(PipelineTask::getName).toList());
+        assertEquals(List.of("ls"), tasks.get(1).getRunAfter());
+
+        Map<String, ParamSpec> params = pipeline.getSpec().getParams().stream()
+                .collect(Collectors.toMap(ParamSpec::getName, p -> p));
+        assertEquals("world", params.get("who").getDefault().getStringVal());
+        assertEquals("$(params.who)", tasks.get(1).getParams().get(0).getValue().getStringVal());
+
+        List<PipelineWorkspaceDeclaration> workspaces = pipeline.getSpec().getWorkspaces();
+        assertEquals(1, workspaces.size());
+        assertEquals("project-dir", tasks.get(1).getWorkspaces().get(0).getWorkspace());
     }
 
     @Test
