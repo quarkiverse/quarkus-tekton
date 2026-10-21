@@ -165,6 +165,49 @@ class CustomTaskTest {
     }
 
     @Test
+    void testObjectParamProperties() {
+        StepDefinition step = step(null, Optional.of("echo hello"), List.of(), List.of());
+
+        ParamSpec noDefault = CustomTask.create(task("hello",
+                List.of(new ParamDefinition("labels", "object", Optional.empty(), Optional.empty(), List.of("app", "tier"))),
+                List.of(), step)).getSpec().getParams().get(0);
+        assertNull(noDefault.getDefault());
+        assertEquals(List.of("app", "tier"), List.copyOf(noDefault.getProperties().keySet()));
+        assertEquals("string", noDefault.getProperties().get("tier").getType());
+
+        ParamSpec withDefault = CustomTask.create(task("hello",
+                List.of(new ParamDefinition("labels", "object", Optional.of("app=demo"), Optional.empty(),
+                        List.of("app", "tier"))),
+                List.of(), step)).getSpec().getParams().get(0);
+        assertEquals(Map.of("app", "demo"), withDefault.getDefault().getObjectVal());
+        assertEquals(List.of("app", "tier"), List.copyOf(withDefault.getProperties().keySet()));
+    }
+
+    @Test
+    void testInvalidObjectParamProperties() {
+        StepDefinition step = step(null, Optional.of("echo hello"), List.of(), List.of());
+        // default value key not declared as property
+        assertThrows(IllegalArgumentException.class, () -> CustomTask.create(task("hello",
+                List.of(new ParamDefinition("labels", "object", Optional.of("app=demo,env=dev"), Optional.empty(),
+                        List.of("app"))),
+                List.of(), step)));
+        // properties on string and array params
+        assertThrows(IllegalArgumentException.class, () -> CustomTask.create(task("hello",
+                List.of(new ParamDefinition("who", "string", Optional.empty(), Optional.empty(), List.of("app"))),
+                List.of(), step)));
+        assertThrows(IllegalArgumentException.class, () -> CustomTask.create(task("hello",
+                List.of(new ParamDefinition("names", "array", Optional.empty(), Optional.empty(), List.of("app"))),
+                List.of(), step)));
+        // invalid and duplicated property names
+        assertThrows(IllegalArgumentException.class, () -> CustomTask.create(task("hello",
+                List.of(new ParamDefinition("labels", "object", Optional.empty(), Optional.empty(), List.of("app.name"))),
+                List.of(), step)));
+        assertThrows(IllegalArgumentException.class, () -> CustomTask.create(task("hello",
+                List.of(new ParamDefinition("labels", "object", Optional.empty(), Optional.empty(), List.of("app", "app"))),
+                List.of(), step)));
+    }
+
+    @Test
     void testWorkspaceNamesAndMountPaths() {
         StepDefinition step = step(null, Optional.of("echo hello"), List.of(), List.of());
         Task task = CustomTask.create(task("hello", List.of(),
