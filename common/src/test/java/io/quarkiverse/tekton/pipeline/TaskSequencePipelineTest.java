@@ -73,6 +73,36 @@ class TaskSequencePipelineTest {
     }
 
     @Test
+    void testParamDefaultIsExposed() {
+        Task hello = new TaskBuilder()
+                .withNewMetadata().withName("hello").endMetadata()
+                .withNewSpec()
+                .addNewParam().withName("who").withType("string").withNewDefault("world").endParam()
+                .addNewWorkspace().withName("project-dir").withOptional(true).endWorkspace()
+                .addNewStep()
+                .withName("hello")
+                .withImage("registry.access.redhat.com/ubi9/ubi-minimal")
+                .withScript("echo Hello $(params.who)")
+                .endStep()
+                .endSpec()
+                .build();
+        Pipeline pipeline = TaskSequencePipeline.create("my-pipeline", List.of(LsTask.create(), hello));
+
+        List<PipelineTask> tasks = pipeline.getSpec().getTasks();
+        assertEquals(List.of("ls", "hello"), tasks.stream().map(PipelineTask::getName).toList());
+        assertEquals(List.of("ls"), tasks.get(1).getRunAfter());
+
+        Map<String, ParamSpec> params = pipeline.getSpec().getParams().stream()
+                .collect(Collectors.toMap(ParamSpec::getName, p -> p));
+        assertEquals("world", params.get("who").getDefault().getStringVal());
+        assertEquals("$(params.who)", tasks.get(1).getParams().get(0).getValue().getStringVal());
+
+        List<PipelineWorkspaceDeclaration> workspaces = pipeline.getSpec().getWorkspaces();
+        assertEquals(1, workspaces.size());
+        assertEquals("project-dir", tasks.get(1).getWorkspaces().get(0).getWorkspace());
+    }
+
+    @Test
     void testNoTasks() {
         assertThrows(IllegalArgumentException.class, () -> TaskSequencePipeline.create("my-pipeline", List.of()));
     }
