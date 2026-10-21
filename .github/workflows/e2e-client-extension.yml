@@ -180,7 +180,11 @@ jobs:
           git add .
           git commit -asm "Initial upload"
           git branch -M main
-          git remote add origin https://$GITEA_TOKEN@$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
+          # Provide the gitea credentials through a credential helper and not within the remote URL, as git drops the
+          # credentials of the URL when gitea redirects the push request: fatal: could not read Username
+          echo "https://$GITEA_USERNAME:$GITEA_TOKEN@$GITEA_HOST" > ${RUNNER_TEMP}/gitea-credentials
+          git config credential.helper "store --file=${RUNNER_TEMP}/gitea-credentials"
+          git remote add origin https://$GITEA_HOST/$REPO_ORG/$REPO_NAME.git
           git push -u origin main
           
           echo "## Register the Tekton plugin"
