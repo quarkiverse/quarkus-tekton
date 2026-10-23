@@ -343,5 +343,299 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++true+++`
 
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-description]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-description[`+++quarkus.tekton.task."tasks".description+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".description+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Description of the task.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__DESCRIPTION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__DESCRIPTION+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-image]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-image[`+++quarkus.tekton.task."tasks".image+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".image+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Image of the step running the task.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__IMAGE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__IMAGE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|required icon:exclamation-circle[title=Configuration property is required]
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-script]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-script[`+++quarkus.tekton.task."tasks".script+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".script+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Script executed by the step. Cannot be used with `command`.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__SCRIPT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__SCRIPT+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-command]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-command[`+++quarkus.tekton.task."tasks".command+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".command+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Command executed by the step (e.g. `sh,-c`). Cannot be used with `script`.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__COMMAND+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__COMMAND+++`
+endif::add-copy-button-to-env-var[]
+--
+|list of string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-args]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-args[`+++quarkus.tekton.task."tasks".args+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".args+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Arguments passed to the command or script of the step.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__ARGS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__ARGS+++`
+endif::add-copy-button-to-env-var[]
+--
+|list of string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-working-dir]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-working-dir[`+++quarkus.tekton.task."tasks".working-dir+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".working-dir+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Working directory of the step (e.g. `$(workspaces.project-dir.path)`).
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__WORKING_DIR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__WORKING_DIR+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-env-env]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-env-env[`+++quarkus.tekton.task."tasks".env."env"+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".env."env"+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Environment variables of the step.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__ENV__ENV_+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__ENV__ENV_+++`
+endif::add-copy-button-to-env-var[]
+--
+|Map<String,String>
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-param-param-type]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-param-param-type[`+++quarkus.tekton.task."tasks".param."param".type+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".param."param".type+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Type of the param: `string`, `array` or `object`.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__TYPE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__TYPE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`+++string+++`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-param-param-default]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-param-param-default[`+++quarkus.tekton.task."tasks".param."param".default+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".param."param".default+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Default value of the param. A comma-separated list for an `array` param, comma-separated `key=value` pairs for an `object` param.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__DEFAULT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__DEFAULT+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-param-param-description]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-param-param-description[`+++quarkus.tekton.task."tasks".param."param".description+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".param."param".description+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Description of the param.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__DESCRIPTION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__DESCRIPTION+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-param-param-properties]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-param-param-properties[`+++quarkus.tekton.task."tasks".param."param".properties+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".param."param".properties+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Properties (keys) of an `object` param. When not set, the keys of the default value are used.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__PROPERTIES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__PARAM__PARAM__PROPERTIES+++`
+endif::add-copy-button-to-env-var[]
+--
+|list of string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-workspace-workspace-mount-path]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-workspace-workspace-mount-path[`+++quarkus.tekton.task."tasks".workspace."workspace".mount-path+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".workspace."workspace".mount-path+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Path where the workspace is mounted (default: `/workspace/`).
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__WORKSPACE__WORKSPACE__MOUNT_PATH+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__WORKSPACE__WORKSPACE__MOUNT_PATH+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-workspace-workspace-optional]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-workspace-workspace-optional[`+++quarkus.tekton.task."tasks".workspace."workspace".optional+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".workspace."workspace".optional+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Whether the workspace is optional.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__WORKSPACE__WORKSPACE__OPTIONAL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__WORKSPACE__WORKSPACE__OPTIONAL+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`+++false+++`
+
+a|icon:lock[title=Fixed at build time] [[quarkus-tekton_quarkus-tekton-task-tasks-workspace-workspace-description]] [.property-path]##link:#quarkus-tekton_quarkus-tekton-task-tasks-workspace-workspace-description[`+++quarkus.tekton.task."tasks".workspace."workspace".description+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.tekton.task."tasks".workspace."workspace".description+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Description of the workspace.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_TEKTON_TASK__TASKS__WORKSPACE__WORKSPACE__DESCRIPTION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_TEKTON_TASK__TASKS__WORKSPACE__WORKSPACE__DESCRIPTION+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
 |===
 
