@@ -49,6 +49,7 @@ quarkus tekton pipeline install build-test-push
 quarkus tekton pipeline exec build-test-push url=https://github.com/org/my-app.git output-image=quay.io/org/my-app
 ----
 
+[[generate-a-pipeline-of-tasks]]
 === Generate a pipeline of tasks
 
 You can create your own pipeline from the tasks of the project using the `pipeline generate` command.
@@ -79,6 +80,44 @@ Options:
 * `--tekton-output-dir`: the directory containing the Tekton resources (default: `.tekton`).
 
 NOTE: Running `quarkus tekton generate` (or using `--regenerate`) recreates the `.tekton` files. A pipeline generated previously must then be generated again.
+
+== Custom tasks
+
+Besides the tasks provided by the extension (`ls`, `rm`, `git-clone`, `maven` and `buildah`), you can declare your own tasks in the `application.properties` file using the `quarkus.tekton.task.<name>` properties.
+They are generated with the other Tekton resources, so they are kept when running `quarkus tekton generate`:
+
+[source,properties]
+----
+quarkus.tekton.task.hello.description=Say hello
+quarkus.tekton.task.hello.image=registry.access.redhat.com/ubi9/ubi-minimal
+quarkus.tekton.task.hello.script=echo "Hello $(params.who) from $GREETING_ENV"
+quarkus.tekton.task.hello.env.GREETING_ENV=tekton
+quarkus.tekton.task.hello.param.who.default=world
+quarkus.tekton.task.hello.param.who.description=Who to greet
+quarkus.tekton.task.hello.workspace.project-dir.optional=true
+quarkus.tekton.task.hello.working-dir=$(workspaces.project-dir.path)
+----
+
+A task runs a single step, which executes either a `script` or a `command` (with optional `args`) using the given `image`. It can declare:
+
+* `env.<name>`: the environment variables of the step,
+* `param.<name>.*`: the params of the task (`type`: `string` (default), `array` or `object`, `default`, `description`). The default value of an `array` param is a comma-separated list, the one of an `object` param comma-separated `key=value` pairs. An `object` param declares its keys using `properties` (e.g. `app,tier`) or, when not set, the keys of its default value,
+* `workspace.<name>.*`: the workspaces of the task (`mount-path`, `optional`, `description`).
+
+The task can then be used, like the provided ones, to <<generate-a-pipeline-of-tasks,generate a pipeline>>:
+
+[source,bash]
+----
+quarkus tekton generate
+quarkus tekton task install hello
+quarkus tekton pipeline generate demo --task git-clone,hello
+quarkus tekton pipeline install demo
+----
+
+A custom task having the same name as a provided task replaces it (a warning is logged during the build).
+An invalid task (e.g. declaring both a `script` and a `command`) fails the build.
+
+See the <<extension-configuration-reference>> for all the `quarkus.tekton.task` properties.
 
 == Git server or registry using a self-signed certificate
 
