@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,18 +92,50 @@ public class CustomTask {
                     .withDescription(param.description().orElse(null))
                     .withDefault(defaultValue);
             if ("object".equals(param.type())) {
-                // Tekton requires the properties of object params, they are the keys of the default value
-                if (defaultValue == null) {
-                    throw new IllegalArgumentException("Object param " + param.name() + " of task " + taskName
-                            + " needs a default value (key=value pairs) to declare its properties.");
-                }
-                Map<String, PropertySpec> properties = new LinkedHashMap<>();
-                defaultValue.getObjectVal().keySet().forEach(key -> properties.put(key, new PropertySpec("string")));
-                spec.withProperties(properties);
+                spec.withProperties(properties(taskName, param, defaultValue));
+            } else if (!param.properties().isEmpty()) {
+                throw new IllegalArgumentException("Param " + param.name() + " of task " + taskName + " has type "
+                        + param.type() + ", only object params can declare properties.");
             }
             result.add(spec.build());
         }
         return result;
+    }
+
+    /**
+     * Tekton requires the properties of object params: they are the declared ones, or the keys of the default value.
+     */
+    private static Map<String, PropertySpec> properties(String taskName, ParamDefinition param, ParamValue defaultValue) {
+        Set<String> keys = new LinkedHashSet<>();
+        for (String property : param.properties()) {
+            validateObjectKey(param, property);
+            if (!keys.add(property)) {
+                throw new IllegalArgumentException("Property " + property + " of object param " + param.name()
+                        + " is declared twice in task " + taskName + ".");
+            }
+        }
+        if (defaultValue != null) {
+            Set<String> defaultKeys = defaultValue.getObjectVal().keySet();
+            if (keys.isEmpty()) {
+                keys.addAll(defaultKeys);
+            } else {
+                for (String key : defaultKeys) {
+                    if (!keys.contains(key)) {
+                        throw new IllegalArgumentException("Key " + key + " of the default value of object param "
+                                + param.name() + " in task " + taskName + " is not a declared property. Declared properties: "
+                                + String.join(", ", keys) + ".");
+                    }
+                }
+            }
+        }
+        if (keys.isEmpty()) {
+            throw new IllegalArgumentException("Object param " + param.name() + " of task " + taskName
+                    + " needs properties or a default value (key=value pairs) to declare its properties.");
+        }
+
+        Map<String, PropertySpec> properties = new LinkedHashMap<>();
+        keys.forEach(key -> properties.put(key, new PropertySpec("string")));
+        return properties;
     }
 
     private static ParamValue defaultValue(ParamDefinition param, String value) {
@@ -117,11 +150,7 @@ public class CustomTask {
                                 + " should be a comma-separated list of key=value pairs, got: " + value + ".");
                     }
                     String key = entry.substring(0, index).trim();
-                    if (!OBJECT_PARAM_NAME.matcher(key).matches()) {
-                        throw new IllegalArgumentException("Invalid key " + key + " in default value of object param "
-                                + param.name()
-                                + ". It should only contain alphanumeric characters, '-' or '_', and start with a letter or '_'.");
-                    }
+                    validateObjectKey(param, key);
                     entries.put(key, entry.substring(index + 1).trim());
                 }
                 yield new ParamValue(entries);
@@ -212,6 +241,13 @@ public class CustomTask {
         } else if (param.name() == null || !PARAM_NAME.matcher(param.name()).matches()) {
             throw new IllegalArgumentException("Invalid param name: " + param.name()
                     + ". It should only contain alphanumeric characters, '-', '_' or '.', and start with a letter or '_'.");
+        }
+    }
+
+    private static void validateObjectKey(ParamDefinition param, String key) {
+        if (key == null || !OBJECT_PARAM_NAME.matcher(key).matches()) {
+            throw new IllegalArgumentException("Invalid key " + key + " of object param " + param.name()
+                    + ". It should only contain alphanumeric characters, '-' or '_', and start with a letter or '_'.");
         }
     }
 
