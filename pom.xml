@@ -40,7 +40,7 @@
         <kubernetes-client.version>8.0.0</kubernetes-client.version>
         <lombok.version>1.18.48</lombok.version>
 
-        <surefire-plugin.version>3.6.0</surefire-plugin.version>
+        <surefire-plugin.version>3.6.1</surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
