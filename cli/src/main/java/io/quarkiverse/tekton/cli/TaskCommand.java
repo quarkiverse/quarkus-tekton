@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 
 import io.quarkiverse.tekton.cli.common.OutputOptionMixin;
 import io.quarkiverse.tekton.cli.task.TaskExec;
+import io.quarkiverse.tekton.cli.task.TaskGenerate;
 import io.quarkiverse.tekton.cli.task.TaskInstall;
 import io.quarkiverse.tekton.cli.task.TaskList;
 import io.quarkiverse.tekton.cli.task.TaskUninstall;
@@ -17,6 +18,7 @@ import picocli.CommandLine.Spec;
 @SuppressWarnings("rawtypes")
 @Command(name = "task", sortOptions = false, mixinStandardHelpOptions = false, header = "Task CLI", subcommands = {
         TaskExec.class,
+        TaskGenerate.class,
         TaskInstall.class,
         TaskUninstall.class,
         TaskList.class })
